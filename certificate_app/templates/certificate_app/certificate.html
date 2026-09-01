@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Certificate Verification' %} — {{ student_name }} — {% trans 'Future HSE Academy' %}{% endblock %}
+{% block meta_description %}{% trans 'Verified certificate for' %} {{ student_name }} — {% trans 'Future HSE Academy' %}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light min-vh-100 d-flex flex-column align-items-center">
+    <div class="container max-w-75" style="max-width: 800px;">
+
+        <!-- Welcome Message -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-brand-primary display-5">
+                {% if is_rtl %}
+                    أهلاً بك، {{ student_name }}
+                {% else %}
+                    Welcome, {{ student_name }}
+                {% endif %}
+            </h1>
+        </div>
+
+        <!-- Verification Status Card -->
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 position-relative">
+            <!-- Top Color Bar -->
+            <div class="bg-brand-secondary position-absolute top-0 start-0 w-100" style="height: 6px;"></div>
+            
+            <div class="card-body p-4 p-md-5 text-center">
+                <!-- Badge -->
+                <div class="mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 90px; height: 90px; background-color: rgba(76, 159, 36, 0.1); color: #4C9F24;">
+                        <i class="bi bi-patch-check-fill display-4"></i>
+                    </div>
+                    <h2 class="fw-bold text-brand-primary h3">{% trans 'Certificate Verified' %}</h2>
+                    <p class="text-secondary mb-0">{% trans 'This certificate has been successfully verified.' %}</p>
+                </div>
+
+                <!-- Details -->
+                <div class="bg-light rounded-4 p-3 p-md-4 mb-4 text-start">
+                    
+                    <div class="row align-items-center py-2">
+                        <div class="col-sm-5 text-muted fw-semibold small d-flex align-items-center gap-2 mb-1 mb-sm-0">
+                            <i class="bi bi-person-fill text-brand-secondary fs-5"></i>
+                            {% trans 'Student Name' %}
+                        </div>
+                        <div class="col-sm-7 fw-bold text-dark text-sm-end text-break">
+                            {{ student_name }}
+                        </div>
+                    </div>
+
+                    <hr class="text-muted opacity-25 my-2">
+
+                    <div class="row align-items-center py-2">
+                        <div class="col-sm-5 text-muted fw-semibold small d-flex align-items-center gap-2 mb-1 mb-sm-0">
+                            <i class="bi bi-qr-code text-brand-secondary fs-5"></i>
+                            {% trans 'Certificate Code' %}
+                        </div>
+                        <div class="col-sm-7 text-sm-end text-break">
+                            <span class="bg-brand-primary text-white px-3 py-1 rounded small fw-bold font-monospace letter-spacing-1">
+                                {{ certificate_code }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <hr class="text-muted opacity-25 my-2">
+
+                    <div class="row align-items-center py-2">
+                        <div class="col-sm-5 text-muted fw-semibold small d-flex align-items-center gap-2 mb-1 mb-sm-0">
+                            <i class="bi bi-building text-brand-secondary fs-5"></i>
+                            {% trans 'Issued by' %}
+                        </div>
+                        <div class="col-sm-7 fw-bold text-dark text-sm-end text-break">
+                            {{ academy_name }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                {% if pdf_url %}
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    <a href="{{ pdf_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-brand-secondary rounded-pill px-4 py-2 shadow-sm fw-semibold d-inline-flex justify-content-center align-items-center gap-2">
+                        <i class="bi bi-file-earmark-pdf fs-5"></i>
+                        {% trans 'View Certificate' %}
+                    </a>
+                    <a href="{{ pdf_url }}" download class="btn btn-outline-dark rounded-pill px-4 py-2 shadow-sm fw-semibold d-inline-flex justify-content-center align-items-center gap-2 border-2">
+                        <i class="bi bi-download fs-5"></i>
+                        {% trans 'Download' %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Embedded PDF Viewer -->
+        {% if pdf_url %}
+        <div class="w-100 mt-4 mb-5">
+            <div class="d-flex align-items-center justify-content-between mb-3 px-2">
+                <h3 class="h5 fw-bold text-brand-primary mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-pdf text-danger fs-4"></i>
+                    {% trans 'Certificate Preview' %}
+                </h3>
+                <span class="badge bg-light text-secondary border border-secondary-subtle px-3 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-arrows-fullscreen me-1"></i> {% trans 'Scroll to view' %}
+                </span>
+            </div>
+            
+            <!-- Modern PDF Frame -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                <!-- Browser-like Header Bar -->
+                <div class="bg-light border-bottom px-3 py-2 d-flex align-items-center" style="height: 44px;">
+                    <div class="d-flex gap-2">
+                        <div class="rounded-circle bg-danger opacity-75 shadow-sm" style="width: 12px; height: 12px;"></div>
+                        <div class="rounded-circle bg-warning opacity-75 shadow-sm" style="width: 12px; height: 12px;"></div>
+                        <div class="rounded-circle bg-success opacity-75 shadow-sm" style="width: 12px; height: 12px;"></div>
+                    </div>
+                    <div class="mx-auto text-muted small fw-semibold d-flex align-items-center gap-2 bg-white px-3 py-1 rounded-pill border shadow-sm" style="font-size: 0.75rem;">
+                        <i class="bi bi-lock-fill text-success"></i>
+                        {% trans 'Verified Document' %}
+                    </div>
+                    <div style="width: 52px;"></div> <!-- Spacer to perfectly center the title -->
+                </div>
+                
+                <!-- PDF Object Wrapper -->
+                <div class="bg-secondary bg-opacity-10 p-2 p-md-4">
+                    <div class="shadow bg-white mx-auto overflow-hidden" style="border-radius: 4px; max-width: 1100px;">
+                        <object data="{{ pdf_url }}#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" class="w-100 d-block" style="height: 75vh; min-height: 600px;">
+                            <div class="p-5 text-center text-secondary bg-white d-flex flex-column justify-content-center align-items-center" style="min-height: 400px;">
+                                <i class="bi bi-file-earmark-pdf display-1 text-muted opacity-25 mb-4"></i>
+                                <p class="mb-3 fs-5 fw-semibold text-dark">{% trans 'Your browser does not support embedded PDFs.' %}</p>
+                                <p class="mb-4">{% trans 'You can still securely view or download your certificate directly.' %}</p>
+                                <a href="{{ pdf_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-brand-primary rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                                    <i class="bi bi-box-arrow-up-right me-2"></i>
+                                    {% trans 'Open Certificate in New Tab' %}
+                                </a>
+                            </div>
+                        </object>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

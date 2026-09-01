@@ -1,0 +1,131 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ current_language }}" dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}{% trans 'Future HSE Academy — Health, Safety & Environment Training' %}{% endblock %}">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <title>{% block title %}{% trans 'Future HSE Academy' %}{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3.3 RTL/LTR -->
+    {% if is_rtl %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    {% else %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% endif %}
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Minimal Custom Styles -->
+    <style>
+        body {
+            font-family: {% if is_rtl %}'Cairo'{% else %}'Inter'{% endif %}, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        main {
+            flex: 1;
+        }
+        /* Custom Colors overrides for Bootstrap */
+        .text-brand-primary { color: #0B2D4A !important; }
+        .bg-brand-primary { background-color: #0B2D4A !important; }
+        .text-brand-secondary { color: #4C9F24 !important; }
+        .bg-brand-secondary { background-color: #4C9F24 !important; }
+        .btn-brand-primary {
+            background-color: #0B2D4A;
+            color: white;
+            border: none;
+        }
+        .btn-brand-primary:hover {
+            background-color: #071e33;
+            color: white;
+        }
+        .btn-brand-secondary {
+            background-color: #4C9F24;
+            color: white;
+            border: none;
+        }
+        .btn-brand-secondary:hover {
+            background-color: #3a7c1b;
+            color: white;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- ═══ Navigation Bar ═══ -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-2">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{{ logo_url }}"
+                     alt="{% trans 'Future HSE Academy Logo' %}"
+                     width="50"
+                     height="50"
+                     class="object-fit-contain rounded">
+                <span class="fw-bold ms-2 text-brand-primary" style="font-size: 1.1rem; letter-spacing: -0.02em;">
+                    {{ academy_name }}
+                </span>
+            </a>
+
+            <!-- Language Switcher -->
+            <div class="d-flex align-items-center gap-2">
+                {% for lang_code, lang_name in LANGUAGES %}
+                    {% if lang_code != current_language %}
+                    <form method="post" action="{% url 'set_language' %}" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="language" value="{{ lang_code }}">
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button type="submit" class="btn btn-sm btn-brand-primary rounded-pill px-3 fw-semibold shadow-sm">
+                            {% if lang_code == 'ar' %}العربية{% else %}English{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ Main Content ═══ -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ═══ Footer ═══ -->
+    <footer class="bg-brand-primary text-white py-4 mt-auto">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                        <img src="{{ logo_url }}"
+                             alt="{% trans 'Future HSE Academy' %}"
+                             width="40"
+                             height="40"
+                             class="object-fit-contain rounded bg-white p-1">
+                        <span class="fw-semibold ms-2 opacity-75">
+                            {{ academy_name }}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 opacity-75 small">{{ footer_text }}</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

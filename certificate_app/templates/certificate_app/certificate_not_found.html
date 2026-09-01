@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Certificate Not Found' %} — {% trans 'Future HSE Academy' %}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light min-vh-100 d-flex flex-column align-items-center">
+    <div class="container max-w-75" style="max-width: 600px;">
+
+        <!-- Error Status Card -->
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 position-relative">
+            <!-- Top Color Bar -->
+            <div class="bg-danger position-absolute top-0 start-0 w-100" style="height: 6px;"></div>
+            
+            <div class="card-body p-4 p-md-5 text-center">
+                <!-- Badge -->
+                <div class="mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 90px; height: 90px; background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                        <i class="bi bi-x-circle-fill display-4"></i>
+                    </div>
+                    <h1 class="fw-bold text-danger h3">{% trans 'Certificate Not Found' %}</h1>
+                    <p class="text-secondary mb-0">{% trans 'Sorry, we could not find a certificate with this code.' %}</p>
+                </div>
+
+                <!-- Info Message -->
+                <div class="bg-light border border-danger-subtle rounded-3 p-3 mb-4 d-flex align-items-start gap-3 text-start">
+                    <i class="bi bi-info-circle text-danger fs-5 mt-1"></i>
+                    <p class="mb-0 text-secondary small">
+                        {% trans 'Please check the URL or certificate code.' %}
+                    </p>
+                </div>
+
+                <!-- Actions -->
+                <div>
+                    <a href="{% url 'home' %}" class="btn btn-brand-primary rounded-pill px-4 py-2 shadow-sm fw-semibold d-inline-flex justify-content-center align-items-center gap-2">
+                        <i class="bi bi-house-door fs-5"></i>
+                        {% trans 'Back to Home' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

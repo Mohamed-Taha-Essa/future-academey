@@ -1,0 +1,71 @@
+[dir="rtl"] .text-left {
+  text-align: right !important;
+}
+
+[dir="rtl"] table th {
+  text-align: right !important;
+}
+
+[dir="rtl"] table th a {
+  text-align: right !important;
+}
+
+[dir="rtl"] table td {
+  text-align: right !important;
+}
+
+[dir="rtl"] .flex.items-center.gap-4 {
+  justify-content: flex-end;
+}
+
+[dir="rtl"] td .flex.items-center.gap-4 {
+  justify-content: flex-start;
+}
+
+[dir="rtl"] td .flex.items-center.gap-4 .block {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+[dir="rtl"] td::before {
+  margin-right: 0 !important;
+  margin-left: 0.5rem !important;
+}
+
+[dir="rtl"] .result-list table td,
+[dir="rtl"] .result-list table th {
+  text-align: right !important;
+}
+
+[dir="rtl"] td.p-3 .flex.items-center.gap-4 > a,
+[dir="rtl"] td.p-3 .flex.items-center.gap-4 > span {
+  margin-right: 0;
+}
+
+[dir="rtl"] td.field-select {
+  text-align: center !important;
+}
+
+[dir="rtl"] td.action-checkbox {
+  text-align: center !important;
+}
+
+[dir="rtl"] td.field-__str__,
+[dir="rtl"] td.field-name,
+[dir="rtl"] td.field-title {
+  text-align: right !important;
+}
+
+[dir="rtl"] .actions {
+  text-align: right !important;
+}
+
+[dir="rtl"] .actions select,
+[dir="rtl"] .actions button {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .paginator {
+  text-align: center !important;
+}

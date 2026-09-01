@@ -1,6 +1,5 @@
 import os
 import qrcode
-import qrcode.image.svg
 
 
 students = [
@@ -62,15 +61,13 @@ for student in students:
         qr.add_data(url)
         qr.make(fit=True)
 
-        # Generate SVG
-        img = qr.make_image(
-            image_factory=qrcode.image.svg.SvgImage
-        )
+        # Generate PNG
+        img = qr.make_image()
 
         # Save QR code
         file_path = os.path.join(
             student_folder,
-            f"{code}.svg"
+            f"{code}.png"
         )
 
         img.save(file_path)
