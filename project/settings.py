@@ -11,23 +11,34 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 from django.utils.translation import gettext_lazy as _
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load local environment variables if .env file exists
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# TODO(security): Move SECRET_KEY to environment variable for production.
-SECRET_KEY = 'django-insecure-pd+@*e4(zop@^beb5hda6t+y5(0sb=k#s6o$7r@w)yg&zpnoj8'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-pd+@*e4(zop@^beb5hda6t+y5(0sb=k#s6o$7r@w)yg&zpnoj8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+# Allow all subdomains for Railway and the custom domain
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.futureacademey.com,.railway.app').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.futureacademey.com',
+    'https://futureacademey.com',
+]
 
 
 # Application definition
@@ -60,6 +71,7 @@ UNFOLD = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # LocaleMiddleware must be after SessionMiddleware and before CommonMiddleware
     'django.middleware.locale.LocaleMiddleware',
@@ -96,10 +108,11 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -154,21 +167,47 @@ LANGUAGE_COOKIE_NAME = 'django_language'
 # ═══════════════════════════════════════════════════════════════
 
 STATIC_URL = 'static/'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-
-# For production: collectstatic output directory
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # ═══════════════════════════════════════════════════════════════
-# Media files (Uploaded PDFs, Logos)
+# Media files & Storage (Cloudflare R2 integration)
 # ═══════════════════════════════════════════════════════════════
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+if os.environ.get('R2_ACCESS_KEY_ID'):
+    # Cloudflare R2 / AWS S3 Storage
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "access_key": os.environ.get('R2_ACCESS_KEY_ID'),
+                "secret_key": os.environ.get('R2_SECRET_ACCESS_KEY'),
+                "bucket_name": os.environ.get('R2_BUCKET_NAME'),
+                "endpoint_url": os.environ.get('R2_ENDPOINT_URL'),
+                # "custom_domain": os.environ.get('R2_CUSTOM_DOMAIN'),
+                "region_name": "auto",
+                "signature_version": "s3v4",
+            }
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    # Local Storage fallback
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 
 # Default primary key field type
@@ -181,16 +220,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Security
 # ═══════════════════════════════════════════════════════════════
 
-# TODO(security): Enable these in production:
-# SECURE_SSL_REDIRECT = True
-# SECURE_HSTS_SECONDS = 31536000
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-# TODO(security): Set DATA_UPLOAD_MAX_MEMORY_SIZE for upload limits in production
-# DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
-
-# X-Frame-Options — default DENY via XFrameOptionsMiddleware
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+# 15 MB upload limit
+DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024
