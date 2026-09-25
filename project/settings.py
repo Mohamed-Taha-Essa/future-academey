@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Project apps
     'certificate_app',
+    'academy_app',
 ]
 
 # Unfold Admin Theme Configuration
@@ -96,6 +97,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # Site-wide settings (logo, colors, academy name)
                 'certificate_app.context_processors.site_settings_processor',
+                # Public academy settings (WhatsApp)
+                'academy_app.context_processors.academy_settings_processor',
             ],
         },
     },

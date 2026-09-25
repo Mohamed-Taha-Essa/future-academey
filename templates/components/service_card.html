@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="col-12 col-md-6 col-lg-4 d-flex">
+    <article class="academy-card service-card w-100">
+        <div class="card-media">
+            <img src="{{ service.image.url }}"
+                 alt="{{ service.localized_image_alt|default:service.localized_name }}"
+                 loading="lazy">
+        </div>
+        <div class="card-body d-flex flex-column">
+            <h3 class="card-title">{{ service.localized_name }}</h3>
+            {% if service.localized_short_description %}
+            <p class="card-text">{{ service.localized_short_description }}</p>
+            {% endif %}
+            <div class="mt-auto pt-3">
+                <a href="{% url 'service_detail' service.slug %}" class="btn btn-card">
+                    {% trans 'View Details' %}
+                    <i class="bi bi-arrow-{% if is_rtl %}left{% else %}right{% endif %} ms-1" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </article>
+</div>

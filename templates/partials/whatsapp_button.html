@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% if whatsapp_url %}
+<a href="{{ whatsapp_url }}"
+   class="whatsapp-float"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="{% trans 'Contact us on WhatsApp' %}">
+    <i class="bi bi-whatsapp" aria-hidden="true"></i>
+</a>
+{% endif %}

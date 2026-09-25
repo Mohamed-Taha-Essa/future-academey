@@ -1,0 +1,56 @@
+{% load i18n %}
+
+<div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000" aria-label="{% trans 'Student reviews' %}">
+
+    {% if reviews|length > 1 %}
+    <div class="carousel-indicators reviews-indicators">
+        {% for review in reviews %}
+        <button type="button"
+                data-bs-target="#reviewsCarousel"
+                data-bs-slide-to="{{ forloop.counter0 }}"
+                {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                aria-label="{% trans 'Go to review' %} {{ forloop.counter }}"></button>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="carousel-inner">
+        {% for review in reviews %}
+        <div class="carousel-item{% if forloop.first %} active{% endif %}">
+            <div class="review-slide">
+                <div class="review-image-frame">
+                    <img src="{{ review.image.url }}"
+                         alt="{{ review.localized_image_alt|default:review.localized_student_name|default:academy_name }}"
+                         loading="lazy"
+                         class="review-image">
+                </div>
+                {% if review.localized_student_name or review.localized_description %}
+                <div class="review-caption">
+                    {% if review.localized_student_name %}
+                    <p class="review-student">
+                        <i class="bi bi-person-check-fill me-1" aria-hidden="true"></i>
+                        {{ review.localized_student_name }}
+                    </p>
+                    {% endif %}
+                    {% if review.localized_description %}
+                    <p class="review-description">{{ review.localized_description }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if reviews|length > 1 %}
+    <button class="carousel-control-prev reviews-control" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{% trans 'Previous review' %}</span>
+    </button>
+    <button class="carousel-control-next reviews-control" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{% trans 'Next review' %}</span>
+    </button>
+    {% endif %}
+
+</div>
