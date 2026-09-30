@@ -1,34 +1,44 @@
 import os
 import qrcode
 
-
 students = [
     {
-        "name": "ahmed-atef-mohamed-ghareeb",
-        "codes": ["fa0064", "fa0065", "fa0066"],
+        "name": "mohamed-alaa-eldeen-mahmoud",
+        "codes": ["fa0082", "fa0083", "fa0084"],
     },
     {
-        "name": "mohamed-abdalaziz-mohamed-ahmed",
-        "codes": ["fa0067", "fa0068", "fa0069"],
+        "name": "ahmed-zakaria-abdelgalil-mohamed",
+        "codes": ["fa0085", "fa0086", "fa0087"],
     },
     {
-        "name": "mostafa-salah-abdelsalam-ahmed",
-        "codes": ["fa0070", "fa0071", "fa0072"],
+        "name": "karim-abbas-abdelfattah-abdelghany",
+        "codes": ["fa0088", "fa0089", "fa0090"],
     },
     {
-        "name": "ahmed-maher-ali-abdel-nabe",
-        "codes": ["fa0073", "fa0074", "fa0075"],
+        "name": "ahmed-mohamed-thabet-younes",
+        "codes": ["fa0091", "fa0092", "fa0093"],
     },
     {
-        "name": "ali-elsayed-mohamed-mohamed",
-        "codes": ["fa0076", "fa0077", "fa0078"],
+        "name": "shaaban-ahmed-hemida",
+        "codes": ["fa0094", "fa0095", "fa0096"],
     },
     {
-        "name": "mohamed-ahmed-hassan",
-        "codes": ["fa0079", "fa0080", "fa0081"],
+        "name": "yasser-atef-seleem",
+        "codes": ["fa0097", "fa0098", "fa0099"],
+    },
+    {
+        "name": "youssef-mohamed-sobhy-ali",
+        "codes": ["fa0100", "fa0101", "fa0102"],
+    },
+    {
+        "name": "mahmoud-emam-ali-hassan",
+        "codes": ["fa0103", "fa0104", "fa0105"],
+    },
+    {
+        "name": "hamed-ragab-hamed-mohamed",
+        "codes": ["fa0106", "fa0107", "fa0108"],
     },
 ]
-
 
 BASE_URL = "https://www.futureacademey.com/certificate"
 
@@ -42,7 +52,7 @@ for student in students:
     codes = student["codes"]
 
     # Create folder for the student
-    student_folder = os.path.join("certificate", name)
+    student_folder = os.path.join("student-certificate", name)
     os.makedirs(student_folder, exist_ok=True)
 
     # Create 3 QR codes

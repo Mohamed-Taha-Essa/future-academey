@@ -192,6 +192,11 @@ class AppSettings(models.Model):
         help_text="رمز اللون الثانوي (مثال: #4C9F24).",
     )
 
+    facebook_url = models.URLField("Facebook", blank=True)
+    instagram_url = models.URLField("Instagram", blank=True)
+    linkedin_url = models.URLField("LinkedIn", blank=True)
+    youtube_url = models.URLField("YouTube", blank=True)
+
     footer_text_ar = models.TextField(
         "نص التذييل (عربي)",
         blank=True,

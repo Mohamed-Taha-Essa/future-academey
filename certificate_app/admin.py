@@ -96,6 +96,12 @@ class AppSettingsAdmin(ModelAdmin):
             },
         ),
         (
+            "روابط التواصل الاجتماعي",
+            {
+                "fields": ("facebook_url", "instagram_url", "linkedin_url", "youtube_url"),
+            },
+        ),
+        (
             "تذييل الموقع (الفوتر)",
             {
                 "fields": ("footer_text_ar", "footer_text_en"),

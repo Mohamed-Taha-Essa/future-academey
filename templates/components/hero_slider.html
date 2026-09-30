@@ -19,17 +19,22 @@
         <div class="carousel-inner">
             {% for slide in hero_slides %}
             <div class="carousel-item{% if forloop.first %} active{% endif %}">
-                <div class="hero-media">
+                <div class="hero-media" aria-hidden="true">
                     <img src="{{ slide.image.url }}"
                          class="hero-image"
-                         alt="{{ slide.localized_image_alt|default:academy_name }}"
-                         {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+                         alt=""
+                         {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+                         onerror="this.classList.add('is-broken');this.remove();">
                 </div>
                 {% if slide.localized_title or slide.localized_description or slide.localized_button_text %}
                 <div class="hero-overlay" aria-hidden="true"></div>
                 <div class="carousel-caption">
                     <div class="container">
                         <div class="hero-caption-content">
+                            <span class="hero-eyebrow">
+                                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                                {% trans 'Certified HSE Training' %}
+                            </span>
                             {% if slide.localized_title %}
                                 {% if forloop.first %}
                                 <h1 class="hero-title">{{ slide.localized_title }}</h1>
