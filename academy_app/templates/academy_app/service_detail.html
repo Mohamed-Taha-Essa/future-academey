@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ service.localized_name }} — {{ academy_name }}{% endblock %}
+{% block meta_description %}{{ service.localized_short_description|default:service.localized_name }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'service_detail' service.slug %}">{% endblock %}
+{% block opengraph %}
+<meta property="og:title" content="{{ service.localized_name }} — {{ academy_name }}">
+<meta property="og:description" content="{{ service.localized_short_description|default:service.localized_name }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'service_detail' service.slug %}">
+{% if service.image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ service.image.url }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="detail-page py-5">
+    <div class="container" style="max-width: 960px;">
+
+        {# ── Breadcrumb ── #}
+        <nav aria-label="{% trans 'Breadcrumb' %}" class="mb-4">
+            <ol class="breadcrumb detail-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}">{% trans 'Home' %}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}#services">{% trans 'Services' %}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ service.localized_name }}</li>
+            </ol>
+        </nav>
+
+        {# ── Service header ── #}
+        <div class="detail-header text-center mb-4">
+            <h1 class="detail-title">{{ service.localized_name }}</h1>
+            {% if service.localized_short_description %}
+            <p class="detail-subtitle">{{ service.localized_short_description }}</p>
+            {% endif %}
+        </div>
+
+        {# ── Service image ── #}
+        <div class="detail-image-frame mb-5">
+            <img src="{{ service.image.url }}"
+                 alt="{{ service.localized_image_alt|default:service.localized_name }}"
+                 class="detail-image">
+        </div>
+
+        {# ── Service content ── #}
+        {% if service.localized_content %}
+        <div class="detail-content mb-5">
+            {{ service.localized_content|linebreaks }}
+        </div>
+        {% endif %}
+
+        {# ── Actions ── #}
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'home' %}#services" class="btn btn-outline-brand">
+                <i class="bi bi-arrow-{% if is_rtl %}right{% else %}left{% endif %} me-1" aria-hidden="true"></i>
+                {% trans 'Back to Services' %}
+            </a>
+            {% if service.external_url %}
+            <a href="{{ service.external_url }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="btn btn-brand">
+                {% trans 'Visit External Link' %}
+                <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+            <a href="{% url 'home' %}#contact" class="btn btn-brand">
+                <i class="bi bi-envelope me-1" aria-hidden="true"></i>
+                {% trans 'Contact Us' %}
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

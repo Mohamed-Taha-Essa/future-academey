@@ -1,0 +1,69 @@
+{% load i18n %}
+{# Section links always point at the homepage fragments. #}
+{% url 'home' as home_url %}
+
+<header>
+<nav id="main-navbar" class="navbar navbar-expand-lg navbar-custom" aria-label="{% trans 'Main navigation' %}">
+    <div class="container">
+
+        {# ── Left: logo + academy name ── #}
+        <a class="navbar-brand d-flex align-items-center gap-2 m-0" href="{% url 'home' %}">
+            <img src="{{ logo_url }}"
+                 alt="{{ academy_name }}"
+                 width="46"
+                 height="46"
+                 class="navbar-logo">
+            <span class="brand-text">{{ academy_name }}</span>
+        </a>
+
+        {# ── Mobile: language switcher + toggler stay visible ── #}
+        <div class="d-flex align-items-center gap-2 order-lg-3">
+            {% for lang_code, lang_name in LANGUAGES %}
+                {% if lang_code != current_language %}
+                <form method="post" action="{% url 'set_language' %}" class="m-0">
+                    {% csrf_token %}
+                    <input type="hidden" name="language" value="{{ lang_code }}">
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="btn-lang">
+                        {% if lang_code == 'ar' %}العربية{% else %}English{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            {% endfor %}
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#primaryNav"
+                    aria-controls="primaryNav"
+                    aria-expanded="false"
+                    aria-label="{% trans 'Toggle navigation' %}">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        {# ── Center: section navigation ── #}
+        <div class="collapse navbar-collapse order-lg-2" id="primaryNav">
+            <ul class="navbar-nav nav-sections mx-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}"{% if request.resolver_match.url_name == 'home' %} aria-current="page"{% endif %}>
+                        {% trans 'Home' %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ home_url }}#services">{% trans 'Services' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ home_url }}#courses">{% trans 'Courses' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ home_url }}#reviews">{% trans 'Reviews' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ home_url }}#contact">{% trans 'Contact' %}</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+</header>

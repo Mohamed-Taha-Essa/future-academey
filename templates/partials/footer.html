@@ -1,0 +1,129 @@
+{% load i18n %}
+{% url 'home' as home_url %}
+
+<footer class="footer-custom">
+    <div class="container">
+
+        {# ── Main footer content ── #}
+        <div class="row gy-5 footer-main">
+
+            {# ── Brand + about + social ── #}
+            <div class="col-lg-5">
+                <a href="{% url 'home' %}" class="footer-brand-link">
+                    <span class="footer-logo-wrap">
+                        <img src="{{ logo_url }}"
+                             alt=""
+                             width="56"
+                             height="56"
+                             class="footer-logo">
+                    </span>
+                    <span class="footer-brand-text">{{ academy_name }}</span>
+                </a>
+
+                <p class="footer-tagline">{% trans 'Health, Safety & Environment Training' %}</p>
+                <p class="footer-description">
+                    {% trans 'Certified training programs that empower professionals and build safer workplaces.' %}
+                </p>
+
+                {% if site_settings.facebook_url or site_settings.instagram_url or site_settings.linkedin_url or site_settings.youtube_url %}
+                <nav class="footer-social" aria-label="{% trans 'Social media' %}">
+                    {% if site_settings.facebook_url %}
+                    <a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if site_settings.instagram_url %}
+                    <a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if site_settings.linkedin_url %}
+                    <a href="{{ site_settings.linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if site_settings.youtube_url %}
+                    <a href="{{ site_settings.youtube_url }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube"><i class="bi bi-youtube" aria-hidden="true"></i></a>
+                    {% endif %}
+                </nav>
+                {% endif %}
+            </div>
+
+            {# ── Quick links ── #}
+            <div class="col-md-6 col-lg-3">
+                <section class="footer-section">
+                    <h2 class="footer-section-title">{% trans 'Quick Links' %}</h2>
+                    <nav aria-label="{% trans 'Footer navigation' %}">
+                        <ul class="footer-links">
+                            <li>
+                                <a class="footer-link" href="{% url 'home' %}">
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>{% trans 'Home' %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="footer-link" href="{{ home_url }}#services">
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>{% trans 'Services' %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="footer-link" href="{{ home_url }}#courses">
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>{% trans 'Courses' %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="footer-link" href="{{ home_url }}#reviews">
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>{% trans 'Reviews' %}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="footer-link" href="{{ home_url }}#contact">
+                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>{% trans 'Contact' %}
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </section>
+            </div>
+
+            {# ── Contact / WhatsApp ── #}
+            <div class="col-md-6 col-lg-4">
+                <section class="footer-section">
+                    <h2 class="footer-section-title">{% trans 'Get In Touch' %}</h2>
+                    <p class="footer-contact-text">
+                        {% trans 'Have a question about our courses? Our team is ready to help you.' %}
+                    </p>
+                    <div class="footer-contact-actions">
+                        {% if whatsapp_url %}
+                        <a href="{{ whatsapp_url }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="footer-whatsapp">
+                            <span class="footer-whatsapp-icon">
+                                <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                            </span>
+                            <span>{% trans 'Chat on WhatsApp' %}</span>
+                        </a>
+                        {% endif %}
+                        <a href="{{ home_url }}#contact" class="footer-contact-btn">
+                            <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                            <span>{% trans 'Send a Message' %}</span>
+                        </a>
+                        {% if whatsapp_number %}
+                        <a href="{{ whatsapp_url }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="footer-phone">
+                            <i class="bi bi-telephone" aria-hidden="true"></i>
+                            <span dir="ltr">+{{ whatsapp_number }}</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        {# ── Bottom bar ── #}
+        <div class="footer-bottom">
+            <p class="footer-text mb-0">{{ footer_text }}</p>
+            <a href="#" class="footer-top-link" aria-label="{% trans 'Back to top' %}" title="{% trans 'Back to top' %}">
+                <i class="bi bi-arrow-up" aria-hidden="true"></i>
+            </a>
+        </div>
+
+    </div>
+</footer>

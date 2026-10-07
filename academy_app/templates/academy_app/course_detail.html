@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ course.localized_name }} — {{ academy_name }}{% endblock %}
+{% block meta_description %}{{ course.localized_short_description|default:course.localized_name }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'course_detail' course.slug %}">{% endblock %}
+{% block opengraph %}
+<meta property="og:title" content="{{ course.localized_name }} — {{ academy_name }}">
+<meta property="og:description" content="{{ course.localized_short_description|default:course.localized_name }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'course_detail' course.slug %}">
+{% if course.image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="detail-page py-5">
+    <div class="container" style="max-width: 1080px;">
+
+        {# ── Breadcrumb ── #}
+        <nav aria-label="{% trans 'Breadcrumb' %}" class="mb-4">
+            <ol class="breadcrumb detail-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}">{% trans 'Home' %}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}#courses">{% trans 'Courses' %}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ course.localized_name }}</li>
+            </ol>
+        </nav>
+
+        {# ── Course hero ── #}
+        <div class="row g-4 g-lg-5 align-items-start mb-5">
+            <div class="col-lg-6">
+                <div class="detail-image-frame">
+                    <img src="{{ course.image.url }}"
+                         alt="{{ course.localized_image_alt|default:course.localized_name }}"
+                         class="detail-image">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h1 class="detail-title mb-3">{{ course.localized_name }}</h1>
+
+                <div class="course-detail-meta mb-4">
+                    <span class="meta-chip">
+                        <i class="bi bi-clock" aria-hidden="true"></i>
+                        {{ course.localized_duration }}
+                    </span>
+                    <span class="meta-chip meta-chip-price">
+                        <i class="bi bi-tag" aria-hidden="true"></i>
+                        {{ course.price|floatformat:2 }}
+                    </span>
+                </div>
+
+                {% if course.localized_short_description %}
+                <p class="detail-subtitle mb-4">{{ course.localized_short_description }}</p>
+                {% endif %}
+
+                {# ── Enrollment CTA ── #}
+                {% if whatsapp_enrollment_url %}
+                <a href="{{ whatsapp_enrollment_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn btn-enroll btn-lg w-100">
+                    <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>
+                    {% trans 'Enroll Now via WhatsApp' %}
+                </a>
+                {% else %}
+                <a href="{% url 'home' %}#contact" class="btn btn-brand btn-lg w-100">
+                    <i class="bi bi-envelope me-1" aria-hidden="true"></i>
+                    {% trans 'Contact Us to Enroll' %}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── Full description ── #}
+        {% if course.localized_description %}
+        <div class="detail-content mb-5">
+            <h2 class="detail-section-title">
+                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                {% trans 'About This Course' %}
+            </h2>
+            {{ course.localized_description|linebreaks }}
+        </div>
+        {% endif %}
+
+        {# ── Course videos ── #}
+        <div class="course-videos mb-5">
+            <h2 class="detail-section-title">
+                <i class="bi bi-play-circle me-2" aria-hidden="true"></i>
+                {% trans 'Course Videos' %}
+            </h2>
+
+            {% if videos %}
+            <div class="row g-4">
+                {% for video in videos %}
+                <div class="col-12 {% if videos|length > 1 %}col-lg-6{% endif %}">
+                    <div class="video-card">
+                        {% if video.localized_title %}
+                        <h3 class="video-title">{{ video.localized_title }}</h3>
+                        {% endif %}
+                        <div class="ratio ratio-16x9 video-frame">
+                            <video controls
+                                   preload="metadata"
+                                   {% if video.thumbnail %}poster="{{ video.thumbnail.url }}"{% endif %}>
+                                <source src="{{ video.video_file.url }}">
+                                {% trans 'Your browser does not support the video tag.' %}
+                            </video>
+                        </div>
+                        {% if video.localized_description %}
+                        <p class="video-description">{{ video.localized_description }}</p>
+                        {% endif %}
+                        <a href="{{ video.video_file.url }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="video-fallback-link">
+                            <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                            {% trans 'Open video in a new tab' %}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-camera-video-off" aria-hidden="true"></i>
+                <p>{% trans 'Course videos will be available soon.' %}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {# ── Bottom enrollment CTA ── #}
+        <div class="enroll-banner text-center">
+            <h2 class="h4 fw-bold mb-3">{% trans 'Ready to start learning?' %}</h2>
+            {% if whatsapp_enrollment_url %}
+            <a href="{{ whatsapp_enrollment_url }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="btn btn-enroll btn-lg">
+                <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>
+                {% trans 'Enroll Now via WhatsApp' %}
+            </a>
+            {% else %}
+            <a href="{% url 'home' %}#contact" class="btn btn-brand btn-lg">
+                <i class="bi bi-envelope me-1" aria-hidden="true"></i>
+                {% trans 'Contact Us to Enroll' %}
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

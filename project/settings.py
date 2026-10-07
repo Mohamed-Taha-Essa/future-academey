@@ -38,6 +38,8 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.futureacad
 CSRF_TRUSTED_ORIGINS = [
     'https://www.futureacademey.com',
     'https://futureacademey.com',
+    # Extra origins, comma-separated (e.g. the Railway *.up.railway.app URL).
+    *[o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()],
 ]
 
 
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Project apps
     'certificate_app',
+    'academy_app',
 ]
 
 # Unfold Admin Theme Configuration
@@ -96,6 +99,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # Site-wide settings (logo, colors, academy name)
                 'certificate_app.context_processors.site_settings_processor',
+                # Public academy settings (WhatsApp)
+                'academy_app.context_processors.academy_settings_processor',
             ],
         },
     },
@@ -186,7 +191,10 @@ if os.environ.get('R2_ACCESS_KEY_ID'):
                 "secret_key": os.environ.get('R2_SECRET_ACCESS_KEY'),
                 "bucket_name": os.environ.get('R2_BUCKET_NAME'),
                 "endpoint_url": os.environ.get('R2_ENDPOINT_URL'),
-                # "custom_domain": os.environ.get('R2_CUSTOM_DOMAIN'),
+                # Public R2 custom domain (e.g. "media.futureacademey.com",
+                # no scheme). When set, file URLs are plain public links on
+                # that domain instead of expiring signed R2 URLs.
+                "custom_domain": os.environ.get('R2_CUSTOM_DOMAIN') or None,
                 "region_name": "auto",
                 "signature_version": "s3v4",
             }
@@ -220,6 +228,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ═══════════════════════════════════════════════════════════════
 
 if not DEBUG:
+    # Railway terminates HTTPS at its proxy and forwards plain HTTP with
+    # X-Forwarded-Proto; without this, SECURE_SSL_REDIRECT loops forever.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -230,3 +241,10 @@ if not DEBUG:
 
 # 15 MB upload limit
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024
+
+# Public base URL encoded in certificate QR codes. QR codes are printed and
+# can never change, so this must be the canonical production domain — never
+# derived from the request host.
+CERTIFICATE_PUBLIC_BASE_URL = os.environ.get(
+    'CERTIFICATE_PUBLIC_BASE_URL', 'https://www.futureacademey.com'
+)

@@ -1,0 +1,101 @@
+{% load i18n %}
+
+<section id="hero" class="hero-section" aria-label="{% trans 'Featured highlights' %}">
+{% if hero_slides %}
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+
+        {% if hero_slides|length > 1 %}
+        <div class="carousel-indicators">
+            {% for slide in hero_slides %}
+            <button type="button"
+                    data-bs-target="#heroCarousel"
+                    data-bs-slide-to="{{ forloop.counter0 }}"
+                    {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                    aria-label="{% trans 'Go to slide' %} {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="carousel-inner">
+            {% for slide in hero_slides %}
+            <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                <div class="hero-media" aria-hidden="true">
+                    <img src="{{ slide.image.url }}"
+                         class="hero-image"
+                         alt=""
+                         {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+                         onerror="this.classList.add('is-broken');this.remove();">
+                </div>
+                {% if slide.localized_title or slide.localized_description or slide.localized_button_text %}
+                <div class="hero-overlay" aria-hidden="true"></div>
+                <div class="carousel-caption">
+                    <div class="container">
+                        <div class="hero-caption-content">
+                            <span class="hero-eyebrow">
+                                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                                {% trans 'Certified HSE Training' %}
+                            </span>
+                            {% if slide.localized_title %}
+                                {% if forloop.first %}
+                                <h1 class="hero-title">{{ slide.localized_title }}</h1>
+                                {% else %}
+                                <h2 class="hero-title">{{ slide.localized_title }}</h2>
+                                {% endif %}
+                            {% endif %}
+                            {% if slide.localized_description %}
+                            <p class="hero-description">{{ slide.localized_description }}</p>
+                            {% endif %}
+                            {% if slide.localized_button_text and slide.button_url %}
+                            <a href="{{ slide.button_url }}" class="btn btn-hero">
+                                {{ slide.localized_button_text }}
+                                <i class="bi bi-arrow-{% if is_rtl %}left{% else %}right{% endif %} ms-1" aria-hidden="true"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if hero_slides|length > 1 %}
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">{% trans 'Previous slide' %}</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">{% trans 'Next slide' %}</span>
+        </button>
+        {% endif %}
+
+    </div>
+
+    {# Ensure a single h1 exists even when the first slide has no title #}
+    {% with first_slide=hero_slides.0 %}
+        {% if not first_slide.localized_title %}
+        <h1 class="visually-hidden">{{ academy_name }}</h1>
+        {% endif %}
+    {% endwith %}
+{% else %}
+    {# Branded fallback when no hero slides are configured #}
+    <div class="hero-fallback d-flex align-items-center">
+        <div class="container text-center">
+            <img src="{{ logo_url }}"
+                 alt="{{ academy_name }}"
+                 width="110"
+                 height="110"
+                 class="hero-fallback-logo mb-4">
+            <h1 class="hero-fallback-title">{{ academy_name }}</h1>
+            <p class="hero-fallback-subtitle">
+                {% trans 'Professional training in Health, Safety &amp; Environment' %}
+            </p>
+            <a href="{% url 'home' %}#courses" class="btn btn-hero">
+                {% trans 'Explore Our Courses' %}
+                <i class="bi bi-arrow-{% if is_rtl %}left{% else %}right{% endif %} ms-1" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+{% endif %}
+</section>

@@ -1,0 +1,29 @@
+# Secrets and local state — never baked into the image
+.env
+.env.*
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Local tooling / environments
+.git/
+.gitignore
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+.claude/
+.vscode/
+.idea/
+
+# Build outputs regenerated in the image
+staticfiles/
+locale/**/*.mo
+
+# Local-only files and artifacts
+student-certificate/
+hero/
+qrcode_test.py
+future_academy_qr.png
+future_academy_qr.svg

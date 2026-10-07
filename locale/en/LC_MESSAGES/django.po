@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 22:34+0300\n"
+"POT-Creation-Date: 2026-09-30 16:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,209 +18,132 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: certificate_app/admin.py:38
-msgid "Student Information"
+#: academy_app/forms.py:12
+msgid "Full Name"
 msgstr ""
 
-#: certificate_app/admin.py:42
-msgid ""
-"Enter the full name of the student as it should appear on the certificate "
-"verification page."
+#: academy_app/forms.py:13
+msgid "Email Address"
 msgstr ""
 
-#: certificate_app/admin.py:48
-msgid "Certificate 1"
+#: academy_app/forms.py:14
+msgid "Phone Number"
 msgstr ""
 
-#: certificate_app/admin.py:54
-msgid "Certificate 2"
+#: academy_app/forms.py:15
+msgid "Your Message"
 msgstr ""
 
-#: certificate_app/admin.py:59
-msgid "Optional. Leave blank if the student has fewer than 2 certificates."
+#: academy_app/forms.py:21
+msgid "Your full name"
 msgstr ""
 
-#: certificate_app/admin.py:64
-msgid "Certificate 3"
+#: academy_app/forms.py:28
+msgid "name@example.com"
 msgstr ""
 
-#: certificate_app/admin.py:69
-msgid "Optional. Leave blank if the student has fewer than 3 certificates."
+#: academy_app/forms.py:34
+msgid "e.g. 201001234567"
 msgstr ""
 
-#: certificate_app/admin.py:74
-msgid "Metadata"
+#: academy_app/forms.py:41
+msgid "Write your message here..."
 msgstr ""
 
-#: certificate_app/admin.py:95
-msgid "Branding"
-msgstr ""
-
-#: certificate_app/admin.py:101
-msgid "Colors"
-msgstr ""
-
-#: certificate_app/admin.py:105
-msgid ""
-"Hex color codes for the brand identity. Leave blank to use default colors."
-msgstr ""
-
-#: certificate_app/admin.py:111
-msgid "Footer"
-msgstr ""
-
-#: certificate_app/models.py:13
+#: academy_app/models.py:21
 #, python-format
-msgid "Only PDF files are allowed. Got: %(ext)s"
+msgid "حجم الفيديو كبير جدًا (%(size)s م.ب). الحد الأقصى 15 م.ب"
 msgstr ""
 
-#: certificate_app/models.py:26
-#: certificate_app/templates/certificate_app/certificate.html:43
-msgid "Student Name"
+#: academy_app/models.py:30
+msgid "اسم الملف ليس مدعومًا. استخدم mp4 أو webm."
 msgstr ""
 
-#: certificate_app/models.py:28
-msgid "Full name of the student."
+#: academy_app/models.py:64
+msgid "رقم الواتساب غير صالح."
 msgstr ""
 
-#: certificate_app/models.py:33
-msgid "Certificate Code 1"
+#: academy_app/templates/academy_app/course_detail.html:20
+#: academy_app/templates/academy_app/service_detail.html:20
+msgid "Breadcrumb"
 msgstr ""
 
-#: certificate_app/models.py:36
-msgid "Unique code for certificate 1 (e.g. FA0064)."
+#: academy_app/templates/academy_app/course_detail.html:23
+#: academy_app/templates/academy_app/service_detail.html:23
+#: templates/partials/footer.html:54 templates/partials/header.html:49
+#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_icon.html:7
+#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_icon.html:9
+#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_icon.html:11
+#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_logo.html:5
+#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_logo.html:7
+#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_logo.html:9
+msgid "Home"
 msgstr ""
 
-#: certificate_app/models.py:39
-msgid "Certificate PDF 1"
+#: academy_app/templates/academy_app/course_detail.html:26
+#: templates/partials/footer.html:64 templates/partials/header.html:56
+msgid "Courses"
 msgstr ""
 
-#: certificate_app/models.py:42
-msgid "PDF file for certificate 1."
+#: academy_app/templates/academy_app/course_detail.html:66
+#: academy_app/templates/academy_app/course_detail.html:142
+msgid "Enroll Now via WhatsApp"
 msgstr ""
 
-#: certificate_app/models.py:47
-msgid "Certificate Code 2"
+#: academy_app/templates/academy_app/course_detail.html:71
+#: academy_app/templates/academy_app/course_detail.html:147
+msgid "Contact Us to Enroll"
 msgstr ""
 
-#: certificate_app/models.py:52
-msgid "Unique code for certificate 2 (e.g. FA0065)."
+#: academy_app/templates/academy_app/course_detail.html:82
+msgid "About This Course"
 msgstr ""
 
-#: certificate_app/models.py:55
-msgid "Certificate PDF 2"
+#: academy_app/templates/academy_app/course_detail.html:92
+msgid "Course Videos"
 msgstr ""
 
-#: certificate_app/models.py:60
-msgid "PDF file for certificate 2."
+#: academy_app/templates/academy_app/course_detail.html:108
+msgid "Your browser does not support the video tag."
 msgstr ""
 
-#: certificate_app/models.py:65
-msgid "Certificate Code 3"
+#: academy_app/templates/academy_app/course_detail.html:119
+msgid "Open video in a new tab"
 msgstr ""
 
-#: certificate_app/models.py:70
-msgid "Unique code for certificate 3 (e.g. FA0066)."
+#: academy_app/templates/academy_app/course_detail.html:128
+msgid "Course videos will be available soon."
 msgstr ""
 
-#: certificate_app/models.py:73
-msgid "Certificate PDF 3"
+#: academy_app/templates/academy_app/course_detail.html:135
+msgid "Ready to start learning?"
 msgstr ""
 
-#: certificate_app/models.py:78
-msgid "PDF file for certificate 3."
+#: academy_app/templates/academy_app/service_detail.html:26
+#: templates/partials/footer.html:59 templates/partials/header.html:53
+msgid "Services"
 msgstr ""
 
-#: certificate_app/models.py:82
-msgid "Created At"
+#: academy_app/templates/academy_app/service_detail.html:58
+msgid "Back to Services"
 msgstr ""
 
-#: certificate_app/models.py:83
-msgid "Updated At"
+#: academy_app/templates/academy_app/service_detail.html:65
+msgid "Visit External Link"
 msgstr ""
 
-#: certificate_app/models.py:86
-msgid "Certificate"
+#: academy_app/templates/academy_app/service_detail.html:71
+#: templates/home.html:73
+msgid "Contact Us"
 msgstr ""
 
-#: certificate_app/models.py:87
-msgid "Certificates"
+#: academy_app/views.py:45
+msgid "Thank you! Your message has been received. We will contact you soon."
 msgstr ""
 
-#: certificate_app/models.py:116
-msgid "PDF file is required when a certificate code is provided."
-msgstr ""
-
-#: certificate_app/models.py:120
-msgid "Certificate code is required when a PDF file is provided."
-msgstr ""
-
-#: certificate_app/models.py:128
-#, python-format
-msgid ""
-"This code is the same as Certificate %(num)d. Each certificate must have a "
-"unique code."
-msgstr ""
-
-#: certificate_app/models.py:197
-msgid "Logo"
-msgstr ""
-
-#: certificate_app/models.py:201
-msgid "Academy logo. Recommended size: 400x400px."
-msgstr ""
-
-#: certificate_app/models.py:205
-msgid "Academy Name (Arabic)"
-msgstr ""
-
-#: certificate_app/models.py:209
-msgid "Academy name in Arabic."
-msgstr ""
-
-#: certificate_app/models.py:213
-msgid "Academy Name (English)"
-msgstr ""
-
-#: certificate_app/models.py:217
-msgid "Academy name in English."
-msgstr ""
-
-#: certificate_app/models.py:221
-msgid "Primary Color"
-msgstr ""
-
-#: certificate_app/models.py:225
-msgid "Primary brand color in hex (e.g. #0B2D4A)."
-msgstr ""
-
-#: certificate_app/models.py:229
-msgid "Secondary Color"
-msgstr ""
-
-#: certificate_app/models.py:233
-msgid "Secondary brand color in hex (e.g. #4C9F24)."
-msgstr ""
-
-#: certificate_app/models.py:237
-msgid "Footer Text (Arabic)"
-msgstr ""
-
-#: certificate_app/models.py:240
-msgid "Footer text in Arabic."
-msgstr ""
-
-#: certificate_app/models.py:244
-msgid "Footer Text (English)"
-msgstr ""
-
-#: certificate_app/models.py:247
-msgid "Footer text in English."
-msgstr ""
-
-#: certificate_app/models.py:251 certificate_app/models.py:252
-#: certificate_app/models.py:255
-msgid "Site Settings"
+#: academy_app/views.py:82
+#, python-brace-format
+msgid "I would like to enroll in {course}"
 msgstr ""
 
 #: certificate_app/templates/certificate_app/certificate.html:4
@@ -230,8 +153,7 @@ msgstr ""
 #: certificate_app/templates/certificate_app/certificate.html:4
 #: certificate_app/templates/certificate_app/certificate.html:5
 #: certificate_app/templates/certificate_app/certificate_not_found.html:4
-#: templates/404.html:4 templates/base.html:10 templates/base.html:117
-#: templates/home.html:4
+#: templates/404.html:4 templates/base.html:11
 msgid "Future HSE Academy"
 msgstr ""
 
@@ -245,6 +167,10 @@ msgstr ""
 
 #: certificate_app/templates/certificate_app/certificate.html:34
 msgid "This certificate has been successfully verified."
+msgstr ""
+
+#: certificate_app/templates/certificate_app/certificate.html:43
+msgid "Student Name"
 msgstr ""
 
 #: certificate_app/templates/certificate_app/certificate.html:55
@@ -263,16 +189,28 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: certificate_app/templates/certificate_app/certificate.html:99
+#: certificate_app/templates/certificate_app/certificate.html:100
 msgid "Certificate Preview"
 msgstr ""
 
-#: certificate_app/templates/certificate_app/certificate.html:104
+#: certificate_app/templates/certificate_app/certificate.html:103
+msgid "Scroll to view"
+msgstr ""
+
+#: certificate_app/templates/certificate_app/certificate.html:118
+msgid "Verified Document"
+msgstr ""
+
+#: certificate_app/templates/certificate_app/certificate.html:129
 msgid "Your browser does not support embedded PDFs."
 msgstr ""
 
-#: certificate_app/templates/certificate_app/certificate.html:106
-msgid "Click here to view the certificate."
+#: certificate_app/templates/certificate_app/certificate.html:130
+msgid "You can still securely view or download your certificate directly."
+msgstr ""
+
+#: certificate_app/templates/certificate_app/certificate.html:133
+msgid "Open Certificate in New Tab"
 msgstr ""
 
 #: certificate_app/templates/certificate_app/certificate_not_found.html:4
@@ -293,11 +231,11 @@ msgstr ""
 msgid "Back to Home"
 msgstr ""
 
-#: project/settings.py:120
+#: project/settings.py:148
 msgid "Arabic"
 msgstr ""
 
-#: project/settings.py:121
+#: project/settings.py:149
 msgid "English"
 msgstr ""
 
@@ -309,46 +247,181 @@ msgstr ""
 msgid "Sorry, the page you are looking for does not exist."
 msgstr ""
 
-#: templates/base.html:8
+#: templates/base.html:9
 msgid "Future HSE Academy — Health, Safety & Environment Training"
 msgstr ""
 
-#: templates/base.html:78 templates/home.html:19
-msgid "Future HSE Academy Logo"
+#: templates/components/contact_form.html:13
+#: venv/lib/python3.10/site-packages/unfold/contrib/simple_history/templates/simple_history/submit_line.html:19
+#: venv/lib/python3.10/site-packages/unfold/templates/admin/submit_line.html:53
+msgid "Close"
 msgstr ""
 
-#: templates/home.html:4 templates/home.html:34
-msgid "Coming Soon"
+#: templates/components/contact_form.html:56
+msgid "Send Message"
+msgstr ""
+
+#: templates/components/course_card.html:19
+msgid "Price"
+msgstr ""
+
+#: templates/components/course_card.html:27
+msgid "View Course"
+msgstr ""
+
+#: templates/components/hero_slider.html:3
+msgid "Featured highlights"
+msgstr ""
+
+#: templates/components/hero_slider.html:14
+msgid "Go to slide"
+msgstr ""
+
+#: templates/components/hero_slider.html:60
+msgid "Previous slide"
+msgstr ""
+
+#: templates/components/hero_slider.html:64
+msgid "Next slide"
+msgstr ""
+
+#: templates/components/hero_slider.html:87
+msgid "Professional training in Health, Safety &amp; Environment"
+msgstr ""
+
+#: templates/components/hero_slider.html:90
+msgid "Explore Our Courses"
+msgstr ""
+
+#: templates/components/review_slider.html:3
+msgid "Student reviews"
+msgstr ""
+
+#: templates/components/review_slider.html:12
+msgid "Go to review"
+msgstr ""
+
+#: templates/components/review_slider.html:48
+msgid "Previous review"
+msgstr ""
+
+#: templates/components/review_slider.html:52
+msgid "Next review"
+msgstr ""
+
+#: templates/components/service_card.html:17
+msgid "View Details"
+msgstr ""
+
+#: templates/home.html:4 templates/partials/footer.html:23
+msgid "Health, Safety & Environment Training"
 msgstr ""
 
 #: templates/home.html:5
 msgid ""
-"Future HSE Academy — We are currently preparing our new website. Stay tuned "
-"for an excellent learning experience."
+"Future HSE Academy offers professional Health, Safety and Environment "
+"training courses and services. Explore our programs and contact us today."
 msgstr ""
 
-#: templates/home.html:39
-msgid "We are currently preparing our new website."
+#: templates/home.html:17
+msgid "What We Offer"
 msgstr ""
 
-#: templates/home.html:42
-msgid "Stay tuned for an excellent learning experience."
+#: templates/home.html:18
+msgid "Our Services"
 msgstr ""
 
-#: templates/home.html:51
-msgid "Health"
+#: templates/home.html:20
+msgid ""
+"Comprehensive safety and training services tailored to your organization."
+msgstr ""
+
+#: templates/home.html:37
+msgid "Professional Training"
+msgstr ""
+
+#: templates/home.html:38
+msgid "Our Courses"
+msgstr ""
+
+#: templates/home.html:40
+msgid "Certified training programs designed to advance your career in HSE."
+msgstr ""
+
+#: templates/home.html:57
+msgid "Student Feedback"
+msgstr ""
+
+#: templates/home.html:58
+msgid "What Our Students Say"
 msgstr ""
 
 #: templates/home.html:60
-msgid "Safety"
+msgid "Real feedback from trainees who completed our programs."
 msgstr ""
 
-#: templates/home.html:69
-msgid "Environment"
+#: templates/home.html:72 templates/partials/footer.html:85
+msgid "Get In Touch"
 msgstr ""
 
 #: templates/home.html:75
-msgid "Safety Today, Sustainable Tomorrow"
+msgid ""
+"Have a question about our courses or services? Send us a message and we will "
+"get back to you."
+msgstr ""
+
+#: templates/partials/footer.html:25
+msgid ""
+"Certified training programs that empower professionals and build safer "
+"workplaces."
+msgstr ""
+
+#: templates/partials/footer.html:29
+msgid "Social media"
+msgstr ""
+
+#: templates/partials/footer.html:49
+msgid "Quick Links"
+msgstr ""
+
+#: templates/partials/footer.html:50
+msgid "Footer navigation"
+msgstr ""
+
+#: templates/partials/footer.html:69 templates/partials/header.html:59
+msgid "Reviews"
+msgstr ""
+
+#: templates/partials/footer.html:74 templates/partials/header.html:62
+msgid "Contact"
+msgstr ""
+
+#: templates/partials/footer.html:87
+msgid "Have a question about our courses? Our team is ready to help you."
+msgstr ""
+
+#: templates/partials/footer.html:98
+msgid "Chat on WhatsApp"
+msgstr ""
+
+#: templates/partials/footer.html:103
+msgid "Send a Message"
+msgstr ""
+
+#: templates/partials/footer.html:123
+msgid "Back to top"
+msgstr ""
+
+#: templates/partials/header.html:6
+msgid "Main navigation"
+msgstr ""
+
+#: templates/partials/header.html:39
+msgid "Toggle navigation"
+msgstr ""
+
+#: templates/partials/whatsapp_button.html:8
+msgid "Contact us on WhatsApp"
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:16
@@ -1977,11 +2050,6 @@ msgstr ""
 msgid "Change History"
 msgstr ""
 
-#: venv/lib/python3.10/site-packages/unfold/contrib/simple_history/templates/simple_history/submit_line.html:19
-#: venv/lib/python3.10/site-packages/unfold/templates/admin/submit_line.html:53
-msgid "Close"
-msgstr ""
-
 #: venv/lib/python3.10/site-packages/unfold/forms.py:72
 msgid "Select action to run"
 msgstr ""
@@ -2401,15 +2469,6 @@ msgstr ""
 #: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_branding.html:3
 #: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_branding.html:6
 msgid "Django administration"
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_icon.html:7
-#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_icon.html:9
-#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_icon.html:11
-#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_logo.html:5
-#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_logo.html:7
-#: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/site_logo.html:9
-msgid "Home"
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/unfold/templates/unfold/helpers/tab_items.html:16

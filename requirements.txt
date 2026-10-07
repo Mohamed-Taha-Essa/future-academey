@@ -1,6 +1,9 @@
 Django==5.2
 django-unfold
 Pillow
+qrcode==8.2
+pypdf==6.19.0
+reportlab==5.0.1
 
 # Production & Deployment
 gunicorn

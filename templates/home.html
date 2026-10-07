@@ -1,73 +1,82 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans 'Future HSE Academy' %} — {% trans 'Coming Soon' %}{% endblock %}
-{% block meta_description %}{% trans 'Future HSE Academy — We are currently preparing our new website. Stay tuned for an excellent learning experience.' %}{% endblock %}
+{% block title %}{{ academy_name }} — {% trans 'Health, Safety & Environment Training' %}{% endblock %}
+{% block meta_description %}{% trans 'Future HSE Academy offers professional Health, Safety and Environment training courses and services. Explore our programs and contact us today.' %}{% endblock %}
 
 {% block content %}
-<section class="min-vh-100 d-flex align-items-center justify-content-center py-5 position-relative overflow-hidden bg-light">
-    <div class="container position-relative text-center" style="z-index: 2; max-width: 800px;">
-        <!-- Logo -->
-        <div class="mb-4">
-            <img src="{{ logo_url }}"
-                 alt="{% trans 'Future HSE Academy Logo' %}"
-                 class="img-fluid rounded-4 shadow-sm"
-                 style="max-width: 180px; transition: transform 0.3s ease;"
-                 onmouseover="this.style.transform='scale(1.05)'"
-                 onmouseout="this.style.transform='scale(1)'">
+
+{# ── Hero ── #}
+{% include "components/hero_slider.html" %}
+
+{# ── Services ── #}
+{% if services %}
+<section id="services" class="section services-section" aria-labelledby="services-heading">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-eyebrow">{% trans 'What We Offer' %}</span>
+            <h2 id="services-heading" class="section-title">{% trans 'Our Services' %}</h2>
+            <p class="section-subtitle">
+                {% trans 'Comprehensive safety and training services tailored to your organization.' %}
+            </p>
         </div>
-
-        <!-- Academy Name -->
-        <h1 class="display-4 fw-bolder text-dark mb-4" style="color: #0B2D4A !important;">
-            {{ academy_name }}
-        </h1>
-
-        <!-- Coming Soon Badge -->
-        <div class="d-inline-flex align-items-center gap-2 text-white px-4 py-2 rounded-pill mb-4 shadow-sm" style="background: linear-gradient(135deg, #4C9F24, #5cb82e);">
-            <i class="bi bi-clock-history fs-5"></i>
-            <span class="fs-5 fw-bold">{% trans 'Coming Soon' %}</span>
+        <div class="row g-4">
+            {% for service in services %}
+                {% include "components/service_card.html" %}
+            {% endfor %}
         </div>
-
-        <!-- Description -->
-        <p class="lead text-secondary mb-2 px-md-5">
-            {% trans 'We are currently preparing our new website.' %}
-        </p>
-        <p class="text-muted mb-5 px-md-5">
-            {% trans 'Stay tuned for an excellent learning experience.' %}
-        </p>
-
-        <!-- HSE Pillars -->
-        <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 gap-md-5 mb-4">
-            <div class="d-flex flex-column align-items-center gap-2">
-                <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 60px; height: 60px; background: linear-gradient(135deg, #0B2D4A, #143d61);">
-                    <i class="bi bi-heart-pulse fs-3"></i>
-                </div>
-                <span class="fw-semibold text-secondary small">{% trans 'Health' %}</span>
-            </div>
-            
-            <div class="d-none d-md-block border-end border-2" style="height: 40px;"></div>
-            
-            <div class="d-flex flex-column align-items-center gap-2">
-                <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 60px; height: 60px; background: linear-gradient(135deg, #0B2D4A, #143d61);">
-                    <i class="bi bi-shield-check fs-3"></i>
-                </div>
-                <span class="fw-semibold text-secondary small">{% trans 'Safety' %}</span>
-            </div>
-            
-            <div class="d-none d-md-block border-end border-2" style="height: 40px;"></div>
-            
-            <div class="d-flex flex-column align-items-center gap-2">
-                <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 60px; height: 60px; background: linear-gradient(135deg, #0B2D4A, #143d61);">
-                    <i class="bi bi-tree fs-3"></i>
-                </div>
-                <span class="fw-semibold text-secondary small">{% trans 'Environment' %}</span>
-            </div>
-        </div>
-
-        <!-- Tagline -->
-        <p class="fw-bold fst-italic" style="color: #4C9F24;">
-            {% trans 'Safety Today, Sustainable Tomorrow' %}
-        </p>
     </div>
 </section>
+{% endif %}
+
+{# ── Courses ── #}
+{% if courses %}
+<section id="courses" class="section courses-section" aria-labelledby="courses-heading">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-eyebrow">{% trans 'Professional Training' %}</span>
+            <h2 id="courses-heading" class="section-title">{% trans 'Our Courses' %}</h2>
+            <p class="section-subtitle">
+                {% trans 'Certified training programs designed to advance your career in HSE.' %}
+            </p>
+        </div>
+        <div class="row g-4">
+            {% for course in courses %}
+                {% include "components/course_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ── Reviews ── #}
+{% if reviews %}
+<section id="reviews" class="section reviews-section" aria-labelledby="reviews-heading">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-eyebrow">{% trans 'Student Feedback' %}</span>
+            <h2 id="reviews-heading" class="section-title">{% trans 'What Our Students Say' %}</h2>
+            <p class="section-subtitle">
+                {% trans 'Real feedback from trainees who completed our programs.' %}
+            </p>
+        </div>
+        {% include "components/review_slider.html" %}
+    </div>
+</section>
+{% endif %}
+
+{# ── Contact ── #}
+<section id="contact" class="section contact-section" aria-labelledby="contact-heading">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-eyebrow">{% trans 'Get In Touch' %}</span>
+            <h2 id="contact-heading" class="section-title">{% trans 'Contact Us' %}</h2>
+            <p class="section-subtitle">
+                {% trans 'Have a question about our courses or services? Send us a message and we will get back to you.' %}
+            </p>
+        </div>
+        {% include "components/contact_form.html" %}
+    </div>
+</section>
+
 {% endblock %}
