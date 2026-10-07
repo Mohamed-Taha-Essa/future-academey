@@ -1,5 +1,10 @@
 # Certificate Code Generation Feature
 
+> **Status: not adopted.** Staff enter certificate codes manually. QR
+> generation and stamping are implemented per
+> `CERTIFICATE_QR_STAMPING_PLAN.md`; code format and cross-record
+> uniqueness validation from this document were implemented there.
+
 ## 1. Decision
 
 Implement certificate-code generation in the authenticated Django/Unfold admin panel.

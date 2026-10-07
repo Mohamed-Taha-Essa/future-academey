@@ -1,0 +1,197 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .qrp { max-width: 1100px; margin: 0 auto; }
+  /* Fixed light card: readable in both admin light and dark themes. */
+  .qrp-card { background: #fff; color: #0f172a; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .qrp-card select, .qrp-card input[type=checkbox] { color: #0f172a; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .qrp-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+  .qrp-toolbar label { font-weight: 600; margin-inline-end: .35rem; }
+  .qrp-stage { position: relative; display: inline-block; max-width: 100%; border: 1px solid #cbd5e1; box-shadow: 0 2px 10px rgba(0,0,0,.08); background: #f8fafc; touch-action: none; }
+  .qrp-stage canvas { display: block; max-width: 100%; height: auto; }
+  .qrp-box { position: absolute; border: 2px dashed #16a34a; background: rgba(22,163,74,.15); cursor: move; box-sizing: border-box; display: flex; align-items: center; justify-content: center; color: #166534; font-weight: 700; font-size: 13px; user-select: none; }
+  .qrp-handle { position: absolute; right: -8px; bottom: -8px; width: 16px; height: 16px; border-radius: 50%; background: #16a34a; border: 2px solid #fff; cursor: nwse-resize; }
+  .qrp-readout { font-family: monospace; color: #475569; }
+  .qrp-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-top: 1rem; }
+  .qrp-btn { padding: .6rem 1.4rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; text-decoration: none; color: #0f172a; }
+  .qrp-btn-primary { background: #16a34a; border-color: #16a34a; color: #fff; font-weight: 700; }
+  .qrp-errors { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 8px; padding: .75rem 1rem; margin-bottom: 1rem; }
+  .qrp-loading { padding: 3rem; color: #64748b; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="qrp">
+  <div class="qrp-card">
+    <p style="margin:0 0 .5rem 0;">
+      الكود: <strong>{{ code }}</strong> — اسحب المربع الأخضر إلى مكان رمز QR، واسحب النقطة في الزاوية لتغيير الحجم، ثم اضغط «تطبيق».
+      يُطبع رمز QR دائماً على الملف الأصلي، لذلك لن يتكرر عند التعديل.
+    </p>
+    {% if source.stamped_url %}
+      <p style="margin:0;" class="qrp-readout">الرابط داخل رمز QR: {{ source.stamped_url }}</p>
+    {% elif not source %}
+      <p style="margin:.5rem 0 0 0; color:#b45309; font-weight:600;">
+        ⚠️ لم يُضف رمز QR على هذا الملف بعد. عند الضغط على «تطبيق» سيُحفظ الملف الحالي كتصميم أصلي ويُضاف عليه رمز QR.
+        لا تستخدم هذا إذا كان الملف يحتوي على QR بالفعل.
+      </p>
+    {% endif %}
+  </div>
+
+  {% if form.errors %}
+    <div class="qrp-errors">
+      {% for field, errors in form.errors.items %}{% for e in errors %}<div>{{ e }}</div>{% endfor %}{% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" id="qrp-form" class="qrp-card">
+    {% csrf_token %}
+    <input type="hidden" name="page" id="f-page" value="{{ placement.page }}">
+    <input type="hidden" name="x" id="f-x" value="{{ placement.x }}">
+    <input type="hidden" name="y" id="f-y" value="{{ placement.y }}">
+    <input type="hidden" name="size" id="f-size" value="{{ placement.size }}">
+
+    <div class="qrp-toolbar">
+      <span>
+        <label for="page-select">الصفحة</label>
+        <select id="page-select">
+          {% for i in page_range %}<option value="{{ i }}">{{ i|add:1 }}</option>{% endfor %}
+        </select>
+      </span>
+      <span>
+        <label for="size-range">الحجم</label>
+        <input type="range" id="size-range" min="{{ min_size }}" max="{{ max_size }}" step="0.005" aria-label="حجم رمز QR">
+      </span>
+      <span class="qrp-readout" id="readout"></span>
+    </div>
+
+    <div dir="ltr" style="text-align:center;">
+      <div class="qrp-stage" id="stage">
+        <div class="qrp-loading" id="loading">جارٍ تحميل الملف…</div>
+        <canvas id="pdf-canvas" hidden></canvas>
+        <div class="qrp-box" id="box" hidden>QR<span class="qrp-handle" id="handle"></span></div>
+      </div>
+    </div>
+
+    <div class="qrp-actions">
+      <button type="submit" class="qrp-btn qrp-btn-primary">تطبيق</button>
+      <button type="button" class="qrp-btn" id="reset-default">الموضع الافتراضي</button>
+      <label><input type="checkbox" name="make_default"> اجعل هذا الموضع الافتراضي للشهادات الجديدة</label>
+      {% if stamped_url %}<a class="qrp-btn" href="{{ stamped_url }}" target="_blank" rel="noopener">عرض الشهادة النهائية</a>{% endif %}
+      <a class="qrp-btn" href="{{ change_url }}">رجوع للشهادة</a>
+    </div>
+  </form>
+</div>
+
+{{ placement|json_script:"qrp-data" }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+  const data = JSON.parse(document.getElementById("qrp-data").textContent);
+  const minSize = data.min_size, maxSize = data.max_size;
+  const state = { page: data.page, x: data.x, y: data.y, size: data.size };
+
+  const stage = document.getElementById("stage");
+  const canvas = document.getElementById("pdf-canvas");
+  const box = document.getElementById("box");
+  const handle = document.getElementById("handle");
+  const pageSelect = document.getElementById("page-select");
+  const sizeRange = document.getElementById("size-range");
+  const readout = document.getElementById("readout");
+  const fields = {
+    page: document.getElementById("f-page"),
+    x: document.getElementById("f-x"),
+    y: document.getElementById("f-y"),
+    size: document.getElementById("f-size"),
+  };
+
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+  const round = (v) => Math.round(v * 10000) / 10000;
+
+  function rect() { return canvas.getBoundingClientRect(); }
+
+  // Keep the square inside the page (size is a fraction of page width).
+  function normalize() {
+    const r = rect();
+    state.size = clamp(state.size, minSize, Math.min(maxSize, r.height / r.width));
+    state.x = clamp(state.x, 0, 1 - state.size);
+    state.y = clamp(state.y, 0, Math.max(0, 1 - (state.size * r.width) / r.height));
+  }
+
+  function render() {
+    if (canvas.hidden) return;
+    normalize();
+    const r = rect();
+    const side = state.size * r.width;
+    box.style.left = state.x * r.width + "px";
+    box.style.top = state.y * r.height + "px";
+    box.style.width = side + "px";
+    box.style.height = side + "px";
+    sizeRange.value = state.size;
+    pageSelect.value = state.page;
+    for (const k of ["page", "x", "y", "size"]) fields[k].value = k === "page" ? state.page : round(state[k]);
+    readout.textContent = `x=${round(state.x)}  y=${round(state.y)}  size=${round(state.size)}`;
+  }
+
+  // ── PDF rendering ─────────────────────────────────────────
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  let pdfDoc = null;
+
+  async function showPage(index) {
+    const page = await pdfDoc.getPage(index + 1);
+    const base = page.getViewport({ scale: 1 });
+    const scale = Math.min(1000 / base.width, 2);
+    const viewport = page.getViewport({ scale });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+    document.getElementById("loading").hidden = true;
+    canvas.hidden = false;
+    box.hidden = false;
+    render();
+  }
+
+  pdfjsLib.getDocument({ url: data.source_url, withCredentials: true }).promise
+    .then((doc) => { pdfDoc = doc; return showPage(state.page); })
+    .catch(() => { document.getElementById("loading").textContent = "تعذّر عرض الملف."; });
+
+  // ── Drag & resize ─────────────────────────────────────────
+  let drag = null;
+  function start(e, mode) {
+    e.preventDefault();
+    e.stopPropagation();
+    drag = { mode, sx: e.clientX, sy: e.clientY, x: state.x, y: state.y, size: state.size };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", end, { once: true });
+  }
+  function move(e) {
+    if (!drag) return;
+    const r = rect();
+    const dx = (e.clientX - drag.sx) / r.width;
+    const dy = (e.clientY - drag.sy) / r.height;
+    if (drag.mode === "move") {
+      state.x = drag.x + dx;
+      state.y = drag.y + dy;
+    } else {
+      state.size = clamp(drag.size + Math.max(dx, (dy * r.height) / r.width), minSize, maxSize);
+    }
+    render();
+  }
+  function end() { drag = null; window.removeEventListener("pointermove", move); }
+
+  box.addEventListener("pointerdown", (e) => start(e, "move"));
+  handle.addEventListener("pointerdown", (e) => start(e, "resize"));
+  sizeRange.addEventListener("input", () => { state.size = parseFloat(sizeRange.value); render(); });
+  pageSelect.addEventListener("change", () => { state.page = parseInt(pageSelect.value, 10); showPage(state.page); });
+  document.getElementById("reset-default").addEventListener("click", () => {
+    Object.assign(state, data.defaults);
+    if (state.page >= data.page_count) state.page = 0;
+    showPage(state.page);
+  });
+  window.addEventListener("resize", render);
+})();
+</script>
+{% endblock %}

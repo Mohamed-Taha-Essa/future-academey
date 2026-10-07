@@ -1,3 +1,4 @@
+import tempfile
 from decimal import Decimal
 
 from django.contrib import admin
@@ -34,7 +35,10 @@ SMALL_GIF = (
 
 
 TEST_STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {"location": tempfile.mkdtemp(prefix="academy-tests-")},
+    },
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 

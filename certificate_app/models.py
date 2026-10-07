@@ -1,7 +1,17 @@
 import os
+import re
+import uuid
+
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.utils.text import slugify
+from django.db.models import Q
+from django.utils.text import get_valid_filename
+
+from .qr_utils import certificate_slug
+
+CODE_SLOTS = (1, 2, 3)
+CODE_PATTERN = re.compile(r"^[A-Za-z0-9]+$")
 
 
 def validate_pdf_extension(value):
@@ -13,11 +23,37 @@ def validate_pdf_extension(value):
         )
 
 
+def _unique_name(folder, filename):
+    """Unique storage key: R2/S3 storage overwrites files with equal names."""
+    base = get_valid_filename(os.path.basename(filename)) or "certificate.pdf"
+    return f"{folder}/{uuid.uuid4().hex[:12]}_{base}"
+
+
+def certificate_pdf_upload_to(instance, filename):
+    return _unique_name("certificates", filename)
+
+
+def original_pdf_upload_to(instance, filename):
+    return _unique_name("certificates/originals", filename)
+
+
+def validate_certificate_code(value):
+    """Letters and digits only: the verify view splits the URL on '-'."""
+    if value and not CODE_PATTERN.match(value.strip()):
+        raise ValidationError(
+            "الكود يجب أن يحتوي على حروف إنجليزية وأرقام فقط (بدون مسافات أو شرطة -)."
+        )
+
+
 class Certificate(models.Model):
     """
     Stores a student's certificate data.
     Each student can have up to 3 certificate code/PDF pairs.
     Certificate codes are globally unique identifiers.
+
+    A certificate PDF is either uploaded final (manual mode, QR already in
+    the design) or produced by stamping a QR on an original uploaded through
+    ``CertificateSource`` (stamped mode).
     """
 
     student_name = models.CharField(
@@ -31,13 +67,15 @@ class Certificate(models.Model):
         "كود الشهادة 1",
         max_length=50,
         unique=True,
+        validators=[validate_certificate_code],
         help_text="الكود الفريد للشهادة الأولى (مثال: FA0064).",
     )
     certificate_pdf_1 = models.FileField(
         "ملف الشهادة 1 (PDF)",
-        upload_to="certificates/",
+        upload_to=certificate_pdf_upload_to,
         validators=[validate_pdf_extension],
-        help_text="ملف الـ PDF للشهادة الأولى.",
+        blank=True,
+        help_text="ملف الـ PDF النهائي للشهادة الأولى.",
     )
 
     # ── Certificate 2 ──────────────────────────────────────────
@@ -47,11 +85,12 @@ class Certificate(models.Model):
         unique=True,
         blank=True,
         null=True,
+        validators=[validate_certificate_code],
         help_text="الكود الفريد للشهادة الثانية (اختياري).",
     )
     certificate_pdf_2 = models.FileField(
         "ملف الشهادة 2 (PDF)",
-        upload_to="certificates/",
+        upload_to=certificate_pdf_upload_to,
         validators=[validate_pdf_extension],
         blank=True,
         null=True,
@@ -65,11 +104,12 @@ class Certificate(models.Model):
         unique=True,
         blank=True,
         null=True,
+        validators=[validate_certificate_code],
         help_text="الكود الفريد للشهادة الثالثة (اختياري).",
     )
     certificate_pdf_3 = models.FileField(
         "ملف الشهادة 3 (PDF)",
-        upload_to="certificates/",
+        upload_to=certificate_pdf_upload_to,
         validators=[validate_pdf_extension],
         blank=True,
         null=True,
@@ -102,8 +142,8 @@ class Certificate(models.Model):
                 setattr(self, f"certificate_code_{i}", code_upper)
                 codes.append((i, code_upper))
 
-            if code and not pdf:
-                errors[f"certificate_pdf_{i}"] = "مطلوب إرفاق ملف الـ PDF عند إدخال كود الشهادة."
+            # "Code requires a PDF" is enforced by the admin form, which
+            # also knows about an uploaded original to stamp.
             if pdf and not code:
                 errors[f"certificate_code_{i}"] = "مطلوب إدخال الكود عند إرفاق ملف الشهادة."
 
@@ -117,19 +157,29 @@ class Certificate(models.Model):
             else:
                 seen[code] = idx
 
+        # DB unique=True is per column only: the same code in slot 1 of one
+        # student and slot 2 of another would make both verify pages 404.
+        for idx, code in codes:
+            if f"certificate_code_{idx}" in errors:
+                continue
+            clash = (
+                Certificate.objects.exclude(pk=self.pk)
+                .filter(code_lookup(code))
+                .first()
+            )
+            if clash:
+                errors[f"certificate_code_{idx}"] = (
+                    f"الكود {code} مستخدم بالفعل لشهادة الطالب: {clash.student_name}."
+                )
+
         if errors:
             raise ValidationError(errors)
 
     @staticmethod
     def get_certificate_by_code(code):
-        from django.db.models import Q
         code_upper = code.strip().upper()
         try:
-            cert = Certificate.objects.get(
-                Q(certificate_code_1__iexact=code_upper)
-                | Q(certificate_code_2__iexact=code_upper)
-                | Q(certificate_code_3__iexact=code_upper)
-            )
+            cert = Certificate.objects.get(code_lookup(code_upper))
         except Certificate.DoesNotExist:
             return None
         except Certificate.MultipleObjectsReturned:
@@ -145,8 +195,68 @@ class Certificate(models.Model):
         return None
 
     def generate_url_slug(self, code):
-        name_slug = slugify(self.student_name, allow_unicode=False)
-        return f"{name_slug}-{code.lower()}"
+        return certificate_slug(self.student_name, code)
+
+
+def code_lookup(code):
+    """Case-insensitive match of ``code`` against all three code columns."""
+    query = Q()
+    for slot in CODE_SLOTS:
+        query |= Q(**{f"certificate_code_{slot}__iexact": code})
+    return query
+
+
+class CertificateSource(models.Model):
+    """Original certificate PDF (without QR) + where to stamp the QR.
+
+    The stamped result is written to ``Certificate.certificate_pdf_<slot>``;
+    stamping always starts from this original, never from a stamped file.
+    """
+
+    certificate = models.ForeignKey(
+        Certificate,
+        on_delete=models.CASCADE,
+        related_name="sources",
+        verbose_name="الشهادة",
+    )
+    slot = models.PositiveSmallIntegerField(
+        "رقم الشهادة",
+        choices=[(slot, str(slot)) for slot in CODE_SLOTS],
+    )
+    original_pdf = models.FileField(
+        "ملف PDF الأصلي (بدون QR)",
+        upload_to=original_pdf_upload_to,
+        validators=[validate_pdf_extension],
+    )
+    page = models.PositiveSmallIntegerField("الصفحة", default=0)
+    x = models.FloatField(
+        "الموضع الأفقي",
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+    )
+    y = models.FloatField(
+        "الموضع الرأسي",
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+    )
+    size = models.FloatField(
+        "حجم الـ QR",
+        validators=[MinValueValidator(0.05), MaxValueValidator(0.5)],
+    )
+    stamped_code = models.CharField("الكود المطبوع", max_length=50, blank=True)
+    stamped_url = models.URLField("الرابط المطبوع", max_length=500, blank=True)
+    stamped_at = models.DateTimeField("تاريخ الطباعة", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "ملف شهادة أصلي"
+        verbose_name_plural = "ملفات الشهادات الأصلية"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["certificate", "slot"],
+                name="unique_certificate_source_slot",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.certificate} — {self.slot}"
 
 
 class AppSettings(models.Model):
@@ -207,6 +317,31 @@ class AppSettings(models.Model):
         "نص التذييل (إنجليزي)",
         blank=True,
         null=True,
+    )
+
+    # ── Default QR position on stamped certificates ────────────
+    qr_default_page = models.PositiveSmallIntegerField(
+        "صفحة الـ QR الافتراضية",
+        default=0,
+        help_text="0 = الصفحة الأولى.",
+    )
+    qr_default_x = models.FloatField(
+        "الموضع الأفقي الافتراضي",
+        default=0.80,
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+        help_text="نسبة من عرض الصفحة (0 = يسار، 1 = يمين) لأعلى يسار الـ QR.",
+    )
+    qr_default_y = models.FloatField(
+        "الموضع الرأسي الافتراضي",
+        default=0.72,
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+        help_text="نسبة من ارتفاع الصفحة (0 = أعلى، 1 = أسفل) لأعلى يسار الـ QR.",
+    )
+    qr_default_size = models.FloatField(
+        "حجم الـ QR الافتراضي",
+        default=0.12,
+        validators=[MinValueValidator(0.05), MaxValueValidator(0.5)],
+        help_text="نسبة من عرض الصفحة.",
     )
 
     class Meta:
