@@ -17,11 +17,22 @@ from pypdf.errors import PdfReadError
 from reportlab.graphics import renderPDF
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
+from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 
 
 MIN_QR_SIZE = 0.05
 MAX_QR_SIZE = 0.5
+# White margin around the code, in QR modules. 3 matches the hand-made
+# certificates (QR image with ~2.6 modules of margin) and still scans well.
+QR_QUIET_ZONE_MODULES = 3
+
+# Certificate code printed next to the QR, proportional to the QR side
+# (hand-made certificates: 11pt text, 7.7pt gap for a 63.5pt QR).
+LABEL_FONT = "Helvetica-Bold"
+LABEL_CAP_HEIGHT = 0.718  # Helvetica cap height, fraction of font size
+LABEL_SIZE_RATIO = 11 / 63.5
+LABEL_GAP_RATIO = 7.7 / 63.5
 
 
 class StampError(Exception):
@@ -70,14 +81,31 @@ def compute_rect(box, x, y, size):
     return left, bottom, side
 
 
-def _qr_overlay(url, page_width, page_height, left, bottom, side) -> bytes:
+def _draw_label(c, label, box, left, bottom, side):
+    """Code text vertically centred on the QR: to its right, or to its left
+    when there is no room before the page edge."""
+    font_size = side * LABEL_SIZE_RATIO
+    gap = side * LABEL_GAP_RATIO
+    width = pdfmetrics.stringWidth(label, LABEL_FONT, font_size)
+    box_left, _, box_width, _ = box
+    text_x = left + side + gap
+    if text_x + width > box_left + box_width:
+        text_x = max(box_left, left - gap - width)
+    cap_height = LABEL_CAP_HEIGHT * font_size
+    baseline = bottom + side / 2 - cap_height / 2
+    c.setFillColorRGB(0, 0, 0)
+    c.setFont(LABEL_FONT, font_size)
+    c.drawString(text_x, baseline, label)
+
+
+def _qr_overlay(url, page_width, page_height, left, bottom, side, label, box) -> bytes:
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=(page_width, page_height))
     # White background so the QR stays scannable on any design.
     c.setFillColorRGB(1, 1, 1)
     c.rect(left, bottom, side, side, stroke=0, fill=1)
 
-    widget = QrCodeWidget(url, barLevel="H")
+    widget = QrCodeWidget(url, barLevel="H", barBorder=QR_QUIET_ZONE_MODULES)
     x0, y0, x1, y1 = widget.getBounds()
     drawing = Drawing(
         side,
@@ -86,12 +114,19 @@ def _qr_overlay(url, page_width, page_height, left, bottom, side) -> bytes:
     )
     drawing.add(widget)
     renderPDF.draw(drawing, c, left, bottom)
+    if label:
+        _draw_label(c, label, box, left, bottom, side)
     c.save()
     return buf.getvalue()
 
 
-def stamp_qr(pdf_file, url, page_index=0, x=0.8, y=0.75, size=0.12) -> bytes:
-    """Return a new PDF (bytes) with a QR for ``url`` stamped on one page."""
+def stamp_qr(
+    pdf_file, url, page_index=0, x=0.8, y=0.75, size=0.12, label=""
+) -> bytes:
+    """Return a new PDF (bytes) with a QR for ``url`` stamped on one page.
+
+    ``label`` (the certificate code) is printed next to the QR when given.
+    """
     reader = _open_reader(pdf_file)
     if not 0 <= int(page_index) < len(reader.pages):
         raise StampError("رقم الصفحة المحدد غير موجود في ملف الـ PDF.")
@@ -122,6 +157,8 @@ def stamp_qr(pdf_file, url, page_index=0, x=0.8, y=0.75, size=0.12) -> bytes:
                     left,
                     bottom,
                     side,
+                    label,
+                    box,
                 )
             )
         )
