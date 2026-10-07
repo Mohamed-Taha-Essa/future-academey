@@ -880,3 +880,63 @@ class SharedLayoutTests(TestCase):
         self.assertContains(r1, "og:image")
         r2 = self.client.get(reverse("course_detail", kwargs={"slug": "safety-course"}))
         self.assertContains(r2, 'rel="canonical"')
+
+
+# ═══════════════════════════════════════════════════════════════
+# load_demo_content management command
+# ═══════════════════════════════════════════════════════════════
+
+@test_settings
+class LoadDemoContentTests(TestCase):
+    def run_command(self, *args):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        out = StringIO()
+        call_command("load_demo_content", *args, stdout=out)
+        return out.getvalue()
+
+    def test_fills_empty_sections_as_inactive_with_files(self):
+        from django.core.files.storage import default_storage
+
+        self.run_command()
+        self.assertEqual(HeroSlide.objects.count(), 2)
+        self.assertEqual(Service.objects.count(), 3)
+        self.assertEqual(Course.objects.count(), 3)
+        self.assertEqual(CourseVideo.objects.count(), 2)
+        self.assertEqual(Review.objects.count(), 3)
+        self.assertFalse(Course.objects.filter(is_active=True).exists())
+        video = CourseVideo.objects.first()
+        self.assertEqual(video.course.slug, "osha-general-industry")
+        self.assertTrue(default_storage.exists(video.video_file.name))
+        self.assertTrue(default_storage.exists(Service.objects.first().image.name))
+
+    def test_running_twice_does_not_duplicate(self):
+        self.run_command()
+        out = self.run_command()
+        self.assertEqual(Course.objects.count(), 3)
+        self.assertIn("skipped", out)
+
+    def test_existing_content_is_never_touched(self):
+        real = Service.objects.create(
+            name_ar="خدمة", name_en="Real", slug="real", image=make_image()
+        )
+        self.run_command()
+        self.assertEqual(list(Service.objects.all()), [real])
+        self.assertEqual(Course.objects.count(), 3)
+
+    def test_active_flag_publishes(self):
+        self.run_command("--active")
+        self.assertEqual(Review.objects.filter(is_active=True).count(), 3)
+
+    def test_dry_run_writes_nothing(self):
+        out = self.run_command("--dry-run")
+        self.assertEqual(HeroSlide.objects.count(), 0)
+        self.assertIn("coursevideo: 2 created", out)
+
+    def test_certificates_are_not_created(self):
+        from certificate_app.models import Certificate
+
+        self.run_command()
+        self.assertFalse(Certificate.objects.exists())

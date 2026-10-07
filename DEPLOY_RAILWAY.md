@@ -52,3 +52,24 @@ so no CORS rule is needed on the bucket.
 docker build -t future-academy .
 docker run --rm -e PORT=8080 -e SECRET_KEY=dev -p 8080:8080 future-academy
 ```
+
+## Example homepage content (optional, one time)
+
+Fills empty homepage sections (hero slides, services, courses, course
+videos, reviews) with example records so admins can see each section's
+shape. Never touches certificates, codes, contact messages or settings,
+and skips any section that already has data.
+
+Railway → service → **Shell** (or `railway run`):
+
+```bash
+python manage.py load_demo_content --dry-run   # preview, writes nothing
+python manage.py load_demo_content             # create, hidden from the public site
+```
+
+Records are created **inactive**. In the admin, tick «نشط» on an item to
+preview it on the site, then edit it with real content or delete it.
+`--active` publishes everything at once (placeholder prices and reviews
+would then be visible to visitors).
+
+Data lives in `academy_app/demo_content/` (export of the local dev data).
