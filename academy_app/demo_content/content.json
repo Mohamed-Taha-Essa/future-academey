@@ -1,0 +1,259 @@
+[
+{
+  "model": "academy_app.heroslide",
+  "pk": 3,
+  "fields": {
+    "image": "hero/hero1.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "title_ar": "نبني مستقبلاً أكثر أمانًا",
+    "title_en": "Building a Safer Future",
+    "description_ar": "برامج تدريبية معتمدة في الصحة والسلامة والبيئة",
+    "description_en": "Certified Health, Safety & Environment training programs",
+    "button_text_ar": "استكشف الدورات",
+    "button_text_en": "Explore Courses",
+    "button_url": "/#courses",
+    "display_order": 1,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:21.322Z",
+    "updated_at": "2026-09-29T07:24:21.322Z"
+  }
+},
+{
+  "model": "academy_app.heroslide",
+  "pk": 4,
+  "fields": {
+    "image": "hero/hero2.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "title_ar": "خبراء السلامة المهنية",
+    "title_en": "Occupational Safety Experts",
+    "description_ar": "",
+    "description_en": "",
+    "button_text_ar": "",
+    "button_text_en": "",
+    "button_url": "",
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:21.942Z",
+    "updated_at": "2026-09-29T07:24:21.942Z"
+  }
+},
+{
+  "model": "academy_app.service",
+  "pk": 4,
+  "fields": {
+    "name_ar": "استشارات السلامة",
+    "name_en": "Safety Consulting",
+    "slug": "safety-consulting",
+    "image": "services/svc_consulting.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "short_description_ar": "",
+    "short_description_en": "Professional safety consulting delivered by certified HSE experts.",
+    "content_ar": "",
+    "content_en": "Details about safety consulting.",
+    "external_url": "",
+    "display_order": 1,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:22.485Z",
+    "updated_at": "2026-09-29T07:24:22.485Z"
+  }
+},
+{
+  "model": "academy_app.service",
+  "pk": 5,
+  "fields": {
+    "name_ar": "تدقيق وتفتيش المنشآت",
+    "name_en": "Facility Audits",
+    "slug": "facility-audits",
+    "image": "services/svc_audit.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "short_description_ar": "",
+    "short_description_en": "Professional facility audits delivered by certified HSE experts.",
+    "content_ar": "",
+    "content_en": "Details about facility audits.",
+    "external_url": "",
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:23.122Z",
+    "updated_at": "2026-09-29T07:24:23.122Z"
+  }
+},
+{
+  "model": "academy_app.service",
+  "pk": 6,
+  "fields": {
+    "name_ar": "التدريب المؤسسي",
+    "name_en": "Corporate Training",
+    "slug": "corporate-training",
+    "image": "services/svc_training.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "short_description_ar": "",
+    "short_description_en": "Professional corporate training delivered by certified HSE experts.",
+    "content_ar": "",
+    "content_en": "Details about corporate training.",
+    "external_url": "",
+    "display_order": 3,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:23.694Z",
+    "updated_at": "2026-09-29T07:24:23.694Z"
+  }
+},
+{
+  "model": "academy_app.course",
+  "pk": 4,
+  "fields": {
+    "name_ar": "دورة الأوشا",
+    "name_en": "OSHA General Industry",
+    "slug": "osha-general-industry",
+    "image": "courses/course_osha.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "short_description_ar": "",
+    "short_description_en": "Master the fundamentals with our OSHA General Industry program.",
+    "description_ar": "",
+    "description_en": "Complete OSHA General Industry description.",
+    "duration_ar": "٥ أيام",
+    "duration_en": "5 days",
+    "price": "1500.00",
+    "display_order": 1,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:24.166Z",
+    "updated_at": "2026-09-29T07:24:24.166Z"
+  }
+},
+{
+  "model": "academy_app.course",
+  "pk": 5,
+  "fields": {
+    "name_ar": "دورة النيبوش",
+    "name_en": "NEBOSH IGC",
+    "slug": "nebosh-igc",
+    "image": "courses/course_nebosh.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "short_description_ar": "",
+    "short_description_en": "Master the fundamentals with our NEBOSH IGC program.",
+    "description_ar": "",
+    "description_en": "Complete NEBOSH IGC description.",
+    "duration_ar": "٣ أسابيع",
+    "duration_en": "3 weeks",
+    "price": "9500.00",
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:24.728Z",
+    "updated_at": "2026-09-29T07:24:24.728Z"
+  }
+},
+{
+  "model": "academy_app.course",
+  "pk": 6,
+  "fields": {
+    "name_ar": "دورة مكافحة الحريق",
+    "name_en": "Fire Fighting",
+    "slug": "fire-fighting",
+    "image": "courses/course_fire.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "short_description_ar": "",
+    "short_description_en": "Master the fundamentals with our Fire Fighting program.",
+    "description_ar": "",
+    "description_en": "Complete Fire Fighting description.",
+    "duration_ar": "يومان",
+    "duration_en": "2 days",
+    "price": "800.00",
+    "display_order": 3,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:25.228Z",
+    "updated_at": "2026-09-29T07:24:25.228Z"
+  }
+},
+{
+  "model": "academy_app.coursevideo",
+  "pk": 4,
+  "fields": {
+    "course": 4,
+    "title_ar": "",
+    "title_en": "Course Introduction",
+    "description_ar": "",
+    "description_en": "",
+    "video_file": "courses/videos/intro.mp4",
+    "thumbnail": "",
+    "display_order": 1,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:25.778Z",
+    "updated_at": "2026-09-29T07:24:25.778Z"
+  }
+},
+{
+  "model": "academy_app.coursevideo",
+  "pk": 5,
+  "fields": {
+    "course": 4,
+    "title_ar": "",
+    "title_en": "Safety Basics",
+    "description_ar": "",
+    "description_en": "",
+    "video_file": "courses/videos/safety.mp4",
+    "thumbnail": "",
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:26.820Z",
+    "updated_at": "2026-09-29T07:24:26.820Z"
+  }
+},
+{
+  "model": "academy_app.review",
+  "pk": 4,
+  "fields": {
+    "image": "reviews/review1.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "student_name_ar": "أحمد محمد",
+    "student_name_en": "Ahmed Mohamed",
+    "description_ar": "",
+    "description_en": "Excellent training experience",
+    "display_order": 1,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:27.637Z",
+    "updated_at": "2026-09-29T07:24:27.637Z"
+  }
+},
+{
+  "model": "academy_app.review",
+  "pk": 5,
+  "fields": {
+    "image": "reviews/review2.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "student_name_ar": "سارة علي",
+    "student_name_en": "Sara Ali",
+    "description_ar": "",
+    "description_en": "Excellent training experience",
+    "display_order": 2,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:28.390Z",
+    "updated_at": "2026-09-29T07:24:28.390Z"
+  }
+},
+{
+  "model": "academy_app.review",
+  "pk": 6,
+  "fields": {
+    "image": "reviews/review3.jpg",
+    "image_alt_ar": "",
+    "image_alt_en": "",
+    "student_name_ar": "محمود حسن",
+    "student_name_en": "Mahmoud Hassan",
+    "description_ar": "",
+    "description_en": "Excellent training experience",
+    "display_order": 3,
+    "is_active": true,
+    "created_at": "2026-09-29T07:24:29.357Z",
+    "updated_at": "2026-09-29T07:24:29.357Z"
+  }
+}
+]
