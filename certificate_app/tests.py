@@ -397,3 +397,86 @@ class CertificateAdminPermissionTests(TestCase):
             "admin:certificate_app_certificate_qr_slot", args=[self.cert.pk, 1]
         )
         self.assertEqual(self.client.get(png_url).status_code, 200)
+
+
+class QrDefaultPlacementTests(TestCase):
+    def test_default_box_matches_hand_made_certificates(self):
+        from .models import QR_DEFAULT_SIZE, QR_DEFAULT_X, QR_DEFAULT_Y
+
+        settings_obj = AppSettings.load()
+        self.assertEqual(
+            (settings_obj.qr_default_x, settings_obj.qr_default_y, settings_obj.qr_default_size),
+            (QR_DEFAULT_X, QR_DEFAULT_Y, QR_DEFAULT_SIZE),
+        )
+        # A4 landscape: 63.5pt square, 42pt from the left, 19pt from the bottom.
+        left, bottom, side = compute_rect(
+            (0, 0, 841.92, 595.32), QR_DEFAULT_X, QR_DEFAULT_Y, QR_DEFAULT_SIZE
+        )
+        self.assertAlmostEqual(left, 42.0, delta=0.5)
+        self.assertAlmostEqual(bottom, 19.0, delta=0.5)
+        self.assertAlmostEqual(side, 63.5, delta=0.5)
+
+
+class QrCodeLabelTests(TestCase):
+    def _label_positions(self, pdf_bytes, label):
+        found = []
+
+        def visitor(text, cm, tm, font, size):
+            if label in (text or ""):
+                found.append(cm[4] + tm[4] * cm[0])
+
+        PdfReader(io.BytesIO(pdf_bytes)).pages[0].extract_text(visitor_text=visitor)
+        return found
+
+    def test_code_printed_right_of_qr(self):
+        out = stamp_qr(io.BytesIO(make_pdf()), "u", 0, 0.0499, 0.8614, 0.0754, "FA0080")
+        xs = self._label_positions(out, "FA0080")
+        self.assertEqual(len(xs), 1)
+        # Hand-made certificates: code starts at 113.2pt (QR right edge + 7.7pt).
+        self.assertAlmostEqual(xs[0], 113.2, delta=0.5)
+
+    def test_code_moves_left_of_qr_near_right_edge(self):
+        out = stamp_qr(io.BytesIO(make_pdf()), "u", 0, 0.92, 0.5, 0.0754, "FA0080")
+        left, _, _ = compute_rect((0, 0, 841.89, 595.28), 0.92, 0.5, 0.0754)
+        xs = self._label_positions(out, "FA0080")
+        self.assertLess(xs[0], left)
+
+    def test_no_label_without_code(self):
+        out = stamp_qr(io.BytesIO(make_pdf()), "u", 0, 0.1, 0.1, 0.1)
+        self.assertEqual(self._label_positions(out, "FA"), [])
+
+
+@override_settings(STORAGES=LOCAL_STORAGES, CERTIFICATE_PUBLIC_BASE_URL=BASE_URL)
+class QrCodeLabelSettingTests(TestCase):
+    def setUp(self):
+        self.client.force_login(
+            User.objects.create_superuser("admin2", "b@example.com", "pw")
+        )
+
+    def _stamped_text(self):
+        cert = Certificate.objects.get()
+        with cert.certificate_pdf_1.open("rb") as handle:
+            return PdfReader(handle).pages[0].extract_text()
+
+    def _add(self):
+        self.client.post(
+            reverse("admin:certificate_app_certificate_add"),
+            {
+                "student_name": "Label Student",
+                "certificate_code_1": "FA0300",
+                "certificate_code_2": "",
+                "certificate_code_3": "",
+                "upload_pdf_1": pdf_upload(),
+            },
+        )
+
+    def test_code_is_stamped_by_default(self):
+        self._add()
+        self.assertIn("FA0300", self._stamped_text())
+
+    def test_code_can_be_turned_off(self):
+        settings_obj = AppSettings.load()
+        settings_obj.qr_show_code = False
+        settings_obj.save()
+        self._add()
+        self.assertNotIn("FA0300", self._stamped_text())

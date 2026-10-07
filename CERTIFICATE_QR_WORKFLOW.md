@@ -79,3 +79,17 @@ the changelist action «تحميل رموز QR».
       columns; no SQL change to existing certificate rows)
 * [ ] Set the default QR position once from the placement page
 * [ ] Stamp one real certificate → print → scan with a phone
+
+## Default layout (matches the hand-made certificates)
+
+Measured from the manual A4-landscape certificates:
+
+* QR: 63.5pt square (~2.24 cm), 42pt from the left edge, 19pt from the
+  bottom (under the design's "Scan Here" label); 3-module white margin.
+* Code (e.g. `FA0080`) printed 7.7pt to the right of the QR, vertically
+  centred, Helvetica-Bold 11pt (the manual files use Britannic Bold, which
+  is not available on the server). Text size and gap scale with the QR; if
+  the QR is near the right edge the code is printed on its left.
+* Site settings → «طباعة الكود بجانب رمز QR» turns the code off for
+  designs that already contain it.
+* Placement page shows the code next to the green box as a preview.

@@ -11,6 +11,12 @@ from django.utils.text import get_valid_filename
 from .qr_utils import certificate_slug
 
 CODE_SLOTS = (1, 2, 3)
+
+# Default QR box measured from the hand-made certificates (A4 landscape):
+# 63.5pt square, 42pt from the left edge, 19pt from the bottom edge.
+QR_DEFAULT_X = 0.0499
+QR_DEFAULT_Y = 0.8614
+QR_DEFAULT_SIZE = 0.0754
 CODE_PATTERN = re.compile(r"^[A-Za-z0-9]+$")
 
 
@@ -327,21 +333,26 @@ class AppSettings(models.Model):
     )
     qr_default_x = models.FloatField(
         "الموضع الأفقي الافتراضي",
-        default=0.80,
+        default=QR_DEFAULT_X,
         validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
         help_text="نسبة من عرض الصفحة (0 = يسار، 1 = يمين) لأعلى يسار الـ QR.",
     )
     qr_default_y = models.FloatField(
         "الموضع الرأسي الافتراضي",
-        default=0.72,
+        default=QR_DEFAULT_Y,
         validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
         help_text="نسبة من ارتفاع الصفحة (0 = أعلى، 1 = أسفل) لأعلى يسار الـ QR.",
     )
     qr_default_size = models.FloatField(
         "حجم الـ QR الافتراضي",
-        default=0.12,
+        default=QR_DEFAULT_SIZE,
         validators=[MinValueValidator(0.05), MaxValueValidator(0.5)],
         help_text="نسبة من عرض الصفحة.",
+    )
+    qr_show_code = models.BooleanField(
+        "طباعة الكود بجانب رمز QR",
+        default=True,
+        help_text="أوقفه إذا كان تصميم الشهادة يحتوي على الكود مكتوباً بالفعل.",
     )
 
     class Meta:

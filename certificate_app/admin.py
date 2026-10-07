@@ -11,7 +11,7 @@ from unfold.admin import ModelAdmin
 
 from .forms import CertificateAdminForm, QRPlacementForm
 from .models import CODE_SLOTS, AppSettings, Certificate
-from .pdf_stamp import StampError, inspect_pdf
+from .pdf_stamp import LABEL_GAP_RATIO, LABEL_SIZE_RATIO, StampError, inspect_pdf
 from .qr_utils import (
     build_certificate_url,
     build_qr_zip,
@@ -352,6 +352,13 @@ class CertificateAdmin(ModelAdmin):
             "placement": {
                 **placement,
                 "defaults": default_placement(),
+                "label": (
+                    getattr(cert, f"certificate_code_{slot}")
+                    if AppSettings.load().qr_show_code
+                    else ""
+                ),
+                "label_size_ratio": LABEL_SIZE_RATIO,
+                "label_gap_ratio": LABEL_GAP_RATIO,
                 "page_count": page_count,
                 "min_size": size_field.min_value,
                 "max_size": size_field.max_value,
@@ -458,6 +465,7 @@ class AppSettingsAdmin(ModelAdmin):
                     "qr_default_x",
                     "qr_default_y",
                     "qr_default_size",
+                    "qr_show_code",
                 ),
                 "description": (
                     "يُستخدم عند رفع شهادة جديدة بدون QR. الأسهل ضبطه من صفحة "

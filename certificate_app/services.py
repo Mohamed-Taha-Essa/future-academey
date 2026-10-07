@@ -42,8 +42,9 @@ def apply_source(source: CertificateSource) -> None:
     url = build_certificate_url(certificate.student_name, code)
 
     with source.original_pdf.open("rb") as original:
+        label = code if AppSettings.load().qr_show_code else ""
         pdf_bytes = stamp_qr(
-            original, url, source.page, source.x, source.y, source.size
+            original, url, source.page, source.x, source.y, source.size, label
         )
 
     field_name = f"certificate_pdf_{slot}"
